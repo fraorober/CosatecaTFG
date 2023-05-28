@@ -118,7 +118,8 @@ USE_TZ = True
 
 import os
 
-STATIC_URL = '/static/'
+STATIC_URL = '/CosatecaApp/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'CosatecaApp/static')
 
 # Urls para fotos
 MEDIA_URL = '/CosatecaApp/media/'
