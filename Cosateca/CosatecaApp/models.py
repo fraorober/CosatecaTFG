@@ -1,53 +1,39 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
 
 # Create your models here.
 
-class User(models.Model):  #Herencia abstracta
+class Person(models.Model):
     
-    username = models.CharField(max_length=20, unique=True)
-    password = models.CharField(max_length=40, null=False, blank=False)
-    email = models.EmailField(unique=True, blank=False, null=False)
-    dni = models.CharField(max_length=9)   #Falta validar
-    admin = models.BooleanField()
-
-    def __str__(self):
-        return self.username
-    
-    class Meta:
-        abstract = True
-    
-class Person(User):
-    
-    name = models.CharField(max_length=30)
-    surname = models.CharField(max_length=50)
     address = models.CharField(max_length=40)
     postalCode = models.CharField(max_length=5)
     imageProfile = models.ImageField(null=True, blank=True)
     phone = models.CharField(max_length=9)   #Falta validar
     banned = models.BooleanField(default=False)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='person', default='null', null=False)
     
     def __str__(self):
-        return self.name + ' ' + self.surname
+        return self.user.first_name + ' ' + self.user.last_name
     
-class Category(models.Model):
+
+class Category(models.TextChoices):
     
-    category = models.CharField(max_length=20)
-    
-    def __str__(self):
-        return self.category
+    DEPORTES = "DEPORTES"
+    MAQUINARIA = "MAQUINARIA"
+    HERRAMIENTAS = "HERRAMIENTAS"
 
 class Product(models.Model):
     
     name = models.CharField(max_length=60, blank=False, null=False)
-    barcode = models.CharField(max_length=12, blank=False, null=False)
-    image = models.ImageField()
+    image = models.ImageField(upload_to="productos", null=True, blank=True)
     description = models.CharField(max_length=500, blank=False, null=False)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    category = models.CharField(Category, choices=Category.choices, max_length=12)
     publicationDate = models.DateField(auto_now_add=True ,blank=False, null=False)
     userWhoUploadProduct = models.ForeignKey(Person, null=False, on_delete=models.CASCADE)
     
     def __str__(self):
-        return self.name + ' added in ' + self.publicationDate.strftime('%d-%m-%Y') + ' by ' + self.userWhoUploadProduct.name
+        return self.name + ' added in ' + self.publicationDate.strftime('%d-%m-%Y') + ' by ' + self.userWhoUploadProduct.user.username
     
 class Booking(models.Model):
     

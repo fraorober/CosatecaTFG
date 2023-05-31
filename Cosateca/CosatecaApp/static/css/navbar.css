@@ -1,3 +1,4 @@
+/*
 @import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
 
@@ -11,13 +12,13 @@
 
 header{
     width: 100%;
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     background: #fff;
 }
 
-/*HEADER SUPERIOR*/
+HEADER SUPERIOR
 
 .header__superior{
     max-width: 1200px;
@@ -37,7 +38,7 @@ header{
     padding: 10px;
 }
 
-/*BARRA MENU*/
+BARRA MENU
 
 .container__menu{
     width: 100%;
@@ -107,7 +108,7 @@ nav > ul > li > a:hover{
 }
 
 
-/*SUBMENU*/
+SUBMENU
 
 nav ul li ul{
     width: 200px;
@@ -163,7 +164,7 @@ nav ul li ul li a:hover{
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.5);
 }
 
-/*ARTICULO*/
+/*ARTICULO
 
 main{
     background: #f0f0f0;
@@ -184,7 +185,7 @@ article p{
     font-weight: 300;
 }
 
-/*ELEMENTOS RESPONSIVOS*/
+/*ELEMENTOS RESPONSIVOS
 
 .icon__menu{
     font-size: 26px;
@@ -223,9 +224,9 @@ article p{
     nav > ul{
         flex-direction: column;
         background-color: #85b0ff;
-        position: fixed;
+        position: relative;
         left: 0;
-        top: 158px;
+        top: -10px;
         width: 100%;
         height: 0px;
         transition: all 300ms ease;
@@ -260,6 +261,7 @@ article p{
 
     .icon__menu{
         display: flex;
+        margin-left: 5px;
     }
 
     #check__menu:checked ~ nav > ul{
@@ -272,3 +274,5 @@ article p{
         margin-top: 158px;
     }
 }
+
+*/

@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from django.contrib.messages import constants as mensajes_de_error
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -37,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'CosatecaApp'
+    'CosatecaApp',
+    'crispy_forms'
 ]
 
 MIDDLEWARE = [
@@ -116,16 +119,32 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-import os
+STATIC_URL = '/static/'
 
-STATIC_URL = '/CosatecaApp/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'CosatecaApp/static')
+MEDIA_URL = '/media/'
 
-# Urls para fotos
-MEDIA_URL = '/CosatecaApp/media/'
+MEDIA_ROOT = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+MESSAGES_TAGS={
+    
+    mensajes_de_error.DEBUG: 'debug',
+    mensajes_de_error.INFO: 'info',
+    mensajes_de_error.SUCCESS: 'success',
+    mensajes_de_error.WARNING: 'warning',
+    mensajes_de_error.ERROR: 'danger',
+}
+
+LOGOUT_REDIRECT_URL = "index"
