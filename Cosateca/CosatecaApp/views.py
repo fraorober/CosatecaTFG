@@ -44,3 +44,8 @@ def upload_product(request):
     else:
         form = ProductForm()
     return render(request, 'create_product.html', {'form': form})
+
+@login_required
+def view_product_detail(request, id):
+    product = Product.objects.filter(id=id).get()
+    return render(request, 'product_detail.html', {'product':product})

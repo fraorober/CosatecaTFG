@@ -26,7 +26,9 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('inicio/', views.inicio_sesion, name="inicio"),
     path('logout/', views.logout_view, name="logout"),
-    path('uploadProduct/', views.upload_product, name="uploadProduct")
+    path('uploadProduct/', views.upload_product, name="uploadProduct"),
+    path('product/<int:id>', views.view_product_detail, name="productDetails")
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
