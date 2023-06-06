@@ -89,16 +89,18 @@
                                     <label for="rating1" title="0.5" class="half"></label>
 
                                 </div>
+                                <span id="star-error" style="color: red;"></span>
+
                                 <br>
                                 Review Title:
-                                <input type="text" class="form-control" value="{{ form.subject.value }}" name="subject">
+                                <input type="text" class="form-control" value="{{ form.subject.value }}" name="subject" required>
                                 <br>
                                 Review:
                                 <textarea name="review" rows="4" class="form-control">{{ form.review.value }}</textarea>
                                 <br>
 
                                 <a href="/inicio" class="btn btn-warning float-left"> Back to menu</a>
-                                <input type="submit" value="Save changes" class="btn btn-success float-right">
+                                <input type="submit" value="Save changes" class="btn btn-success float-right" onclick="validateForm()">
                             </div>
                         </form>
                     </div>
@@ -111,6 +113,26 @@
 
         </div>
     </div>
+
+    <script>
+        function validateForm() {
+            var stars = document.getElementsByName('rating');
+            var starError = document.getElementById('star-error');
+          
+            var starSelected = false;
+            for (var i = 0; i < stars.length; i++) {
+                if (stars[i].checked) {
+                starSelected = true;
+                break;
+                }
+            }
+          
+            if (!starSelected) {
+              starError.textContent = 'Please select a star rating.';
+              event.preventDefault(); // Evita que se envíe el formulario si no se ha seleccionado una estrella.
+            }
+        }
+    </script>
 
    
 </body>           

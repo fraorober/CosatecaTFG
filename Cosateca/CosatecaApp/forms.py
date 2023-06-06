@@ -48,12 +48,11 @@ class RegistrationForm(forms.Form):
             
     def clean_username(self):
         username = self.cleaned_data.get('username')
-        listaUsername = User.objects.all()
         
-        if username in listaUsername:
-            raise forms.ValidationError('This username already exists.')
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError('Username already exists.')
         
-        return username           
+        return username         
 
     def save(self):
         username = self.cleaned_data['username']
