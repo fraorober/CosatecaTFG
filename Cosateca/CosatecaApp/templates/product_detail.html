@@ -63,7 +63,7 @@
             <div class="popup-image">
                 {% if product.image %}
                     <span>&times;</span>
-                    <img src="/media/{{product.image.url}}" class="card-img-top img-fluid" alt="..."> 
+                    <img src="{{product.image.url}}" class="card-img-top img-fluid" alt="..."> 
                 {% else %}
                     <span>&times;</span>
                     <img src="/media/noPhotoDetail.jpg" class="card-img-top img-fluid" alt="..."> 
@@ -232,6 +232,11 @@
         }
     </script>
    
-</body>           
+</body>   
+
+<footer>
+    {%include "footer.html" %}
+
+</footer>
 
 </html>
