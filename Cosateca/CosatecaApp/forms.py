@@ -118,8 +118,23 @@ class ProductForm(forms.Form):
 
         product.save()
         return product
+
+class ReviewForm(forms.Form):
+    subject = forms.CharField(max_length=100, error_messages={'required': 'This field is required.'}, required=True)
+    review = forms.CharField(max_length=1000, widget=forms.Textarea, required=False)
+    rating = forms.FloatField(min_value=0, max_value=5, error_messages={'required': 'This field is required.'})
     
-            
+    def save(self, product, user):
+        rating = Rating(
+            rating=self.cleaned_data['rating'],
+            subject=self.cleaned_data['subject'],
+            review=self.cleaned_data['review'],
+            product=product,
+            user=user
+        )
+        rating.save()
+        return rating
+    
 
     
     

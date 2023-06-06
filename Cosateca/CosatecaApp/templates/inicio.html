@@ -8,6 +8,7 @@
     </title>
     {%include "navbar.html" %}
     <link href="/static/css/card.css" rel="stylesheet">
+    <link href="/static/css/messages.css" rel="stylesheet">
 
 
 </head>
@@ -15,6 +16,13 @@
 <body>
     <main> 
         <div class="container-fluid cardProduct bg-trasparent my-4 p-3" style="position: relative;">
+            {% if messages %}
+                                
+                {% for mensaje in messages %}
+                    <div class="correcto"> {{ mensaje }}</div>
+                {% endfor %}
+                
+            {% endif %}
             {% if products %}
 
                 <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-4 g-3">
@@ -61,7 +69,7 @@
             </div>
             </div>
             <div class="carousel-item">
-            <img src="/media/carrusel/Carrusel2.jpg" class="d-block w-100" alt="...">
+            <img src="/media/carrusel/Carrusel3.png" class="d-block w-100" alt="...">
             <div class="carousel-caption d-none d-md-block">
                 <h2>Discover</h2>
                 <h5>Discover a world of wonders in our library of things.</h2>

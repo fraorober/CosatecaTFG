@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models.signals import post_save
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Create your models here.
 
@@ -65,14 +65,20 @@ class MessengerService(models.Model):
     
 class Rating(models.Model):
     
-    rating = models.IntegerField()  #Validar min y max
+    rating = models.FloatField(default=0, validators=[
+            MaxValueValidator(5.0),
+            MinValueValidator(0.0)
+        ]
+    )
+    subject = models.CharField(max_length=100, blank=True)
     review = models.CharField(max_length=1000, null=True, blank=True)
     product = models.ForeignKey(Product, null=False, blank=False, on_delete=models.CASCADE)
-    date = models.DateTimeField(auto_now_add=True )
+    create_date = models.DateTimeField(auto_now_add=True )
+    update_date = models.DateTimeField(auto_now=True )
     user = models.ForeignKey(Person, null=False, on_delete=models.CASCADE)
     
     def __str__(self):
-        return 'Rating of ' + self.product.name + ' of ' + self.user.name + ': ' + str(self.rating)
+        return 'Rating of ' + self.product.name + ' of ' + self.user.user.first_name + ': ' + str(self.rating)
     
 class Reason(models.Model):
     

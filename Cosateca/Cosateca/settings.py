@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'CosatecaApp',
-    'crispy_forms'
+    'crispy_forms',
+    "crispy_bootstrap4"
 ]
 
 MIDDLEWARE = [
@@ -136,7 +137,9 @@ STATICFILES_DIRS = (
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 MESSAGES_TAGS={
     
@@ -147,4 +150,5 @@ MESSAGES_TAGS={
     mensajes_de_error.ERROR: 'danger',
 }
 
-LOGOUT_REDIRECT_URL = "index"
+LOGOUT_REDIRECT_URL = "inicio"
+LOGIN_REDIRECT_URL = "inicio"

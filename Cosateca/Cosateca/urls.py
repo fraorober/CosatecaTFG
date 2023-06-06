@@ -21,13 +21,16 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='index'),
+    path('', views.index, name='inicio'),
     path('register/', views.register, name ="register"),
     path('accounts/', include('django.contrib.auth.urls')),
     path('inicio/', views.inicio_sesion, name="inicio"),
     path('logout/', views.logout_view, name="logout"),
     path('uploadProduct/', views.upload_product, name="uploadProduct"),
-    path('product/<int:id>', views.view_product_detail, name="productDetails")
+    path('product/<int:product_id>', views.view_product_detail, name="productDetails"),
+    path('submit_review/<int:product_id>', views.submit_review, name="submit_review"),
+    path('delete_review/<int:review_id>', views.delete_review, name="delete_review"),
+    path('update_review/<int:review_id>/', views.edit_review, name='edit_review'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
