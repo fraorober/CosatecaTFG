@@ -1,0 +1,18 @@
+.photoProfile {
+    background: lightblue;
+    border-radius: 50%;
+    width: 450px;
+    height: 450px;
+    margin-left: 100px;
+}
+
+@media (max-width: 725px){
+    
+    .photoProfile{
+        background: lightblue;
+        border-radius: 50%;
+        width: 350px;
+        height: 350px;
+        margin-left: 0px;
+    }
+}

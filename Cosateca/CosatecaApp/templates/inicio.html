@@ -4,13 +4,12 @@
 
 <head>
     <title>
-        Barra Navegación
+        Init
     </title>
     {%include "navbar.html" %}
 
     <link href="/static/css/card.css" rel="stylesheet">
     <link href="/static/css/messages.css" rel="stylesheet">
-
 
 </head>
 
@@ -31,20 +30,26 @@
                         <div class="col"> 
                             <div class="card h-100 shadow-sm"> 
                             {% if product.image %}
-                                <img src="{{product.image.url}}" class="card-img-top" alt="..."> 
+                                {% if product.image != "False" %}
+                                    <img src="/media/{{product.image}}" alt="Product Image" class="card-img-top img-fluid">
+                                {% else %}
+                                    <img src="/media/noPhoto.jpg" alt="Product Image" class="card-img-top img-fluid">
+                                {% endif %}
                             {% else %}
-                                <img src="/media/noPhoto.jpg" class="card-img-top" alt="..."> 
+                                <img src="/media/noPhoto.jpg" alt="Product Image" class="card-img-top img-fluid">
                             {% endif %}
 
                                 <div class="card-body"> 
                                     <div class="clearfix mb-3"> 
-                                        <span class="float-start badge rounded-pill bg-primary">{{product.category}}</span> 
-                                        <span class="float-end badge rounded-pill bg-danger newProduct">New</span> 
+                                        <span class="float-start badge rounded-pill bg-primary">{{product.category}}</span>
+                                        {% if product in new_products %}
+                                            <span class="float-end badge rounded-pill bg-danger newProduct">New</span>
+                                        {% endif %}
                                     </div>
                                     <h2 class="card-title">{{product.name}}</h2>  
                                     <h2 class="text">{{product.description}}</h2> 
                                     <div class="text-center my-4"> 
-                                        <a href="/product/{{product.id}}" class="btn btn-warning">Check offer</a> 
+                                        <a href="/product/{{product.id}}" class="btn btn-warning">Check offer</a>
                                     </div> 
                                 </div> 
                             </div> 

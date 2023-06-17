@@ -31,6 +31,11 @@ urlpatterns = [
     path('submit_review/<int:product_id>', views.submit_review, name="submit_review"),
     path('delete_review/<int:review_id>', views.delete_review, name="delete_review"),
     path('update_review/<int:review_id>/', views.edit_review, name='edit_review'),
+    path('profile/', views.profile, name='profile'),
+    path('editUserInfo', views.edit_user_info, name='editUserInfo'),
+    path('myProducts', views.products_of_logged_user, name='myProducts'),
+    path('product/delete/<int:product_id>', views.delete_product_upload_of_logged_user, name='deleteProductUploadByLoggedUser'),
+    path('product/edit/<int:product_id>', views.edit_product_upload_by_logged_user, name='editProductUploadByLoggedUser'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -4,7 +4,7 @@
 
 <head>
     <title>
-        Registro
+        Edit Info of Logged User
     </title>
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
@@ -17,44 +17,32 @@
     {%include "navbar.html" %}
     {% load crispy_forms_tags %}
 
-
-
 </head>
 
 <body>
 
     <div class="container">
         <br>
-        <br>
-        <br>
         <div class="row">
 
             <div class="col-12 col-md offset-md">
                 
-                <div class="card" style="max-width: 600px; margin: 0 auto;">
+                <div class="card">
 
                     <div class="card-body">
 
-                        <h2 class="Titulo Registro"> Registro de usuario</h2>
+                        <h2 class="Titulo Registro"> Edit Info</h2>
                         <hr>
-                        <form action="" method="post">
+                        <form action="{% url 'editUserInfo' %}" method="post" enctype="multipart/form-data">
 
                             {% csrf_token %}
 
-                            {% if messages %}
-                                
-                                {% for mensaje in messages %}
-                                    {{ mensaje }}
-                                {% endfor %}
-                                
-                            {% endif %}
-
-                            {{form | crispy}}
-
-                            <br>
-                            <a href="/register" class="btn btn-warning float-left"> Registrarse</a>
-                            <input type="submit" value="Iniciar Sesión" class="btn btn-success float-right">
-
+                            <h5>Do you want change info?</h5>
+                            <div>
+                                {{form | crispy}}                            
+                                <a href="/inicio" class="btn btn-warning float-left"> Back to menu</a>
+                                <input type="submit" value="Save changes" class="btn btn-success float-right">
+                            </div>
                         </form>
                     </div>
 
@@ -65,16 +53,11 @@
             </div>
 
         </div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        
     </div>
 
+    <br>
    
-</body>    
+</body>  
 
 <footer>
     {%include "footer.html" %}

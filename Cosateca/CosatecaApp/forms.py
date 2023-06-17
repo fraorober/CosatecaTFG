@@ -101,7 +101,6 @@ class ProductForm(forms.Form):
     description = forms.CharField(max_length=500, widget=forms.Textarea)
     category = forms.ChoiceField(choices=Category.choices)    
     
-
     def save(self, user):
         cleaned_data = self.cleaned_data
         person=Person.objects.filter(user=user).get()
@@ -134,8 +133,49 @@ class ReviewForm(forms.Form):
         rating.save()
         return rating
     
+class EditInfoUserForm(forms.Form):
+    first_name = forms.CharField(max_length=40, error_messages={'required': 'This field is required.'})
+    last_name = forms.CharField(max_length=40, error_messages={'required': 'This field is required.'})
+    address = forms.CharField(max_length=40, error_messages={'required': 'This field is required.'})
+    postalCode = forms.CharField(max_length=5, error_messages={'required': 'This field is required.'})
+    imageProfile = forms.ImageField(required=False, label="Image Profile")
+    phone = forms.CharField(max_length=9, error_messages={'required': 'This field is required.'})
 
-    
-    
+    def clean_postalCode(self):
+        postal_code = self.cleaned_data.get('postalCode')
 
+        if postal_code:
+            if len(postal_code) != 5:
+                raise forms.ValidationError('Postal code must be 5 digits.')
+
+            if not postal_code.isdigit():
+                raise forms.ValidationError('Postal code must contain only numbers.')
+        
+        return postal_code
     
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
+        
+        if phone:
+            if len(phone) != 9:
+                raise forms.ValidationError('Phone must be 5 digits.')
+            
+            if not phone.isdigit():
+                raise forms.ValidationError('Phone must contain only numbers.')
+        
+        return phone
+    
+    def save(self, product, user):
+        person = Person(
+            address=self.cleaned_data['address'],
+            postalCode=self.cleaned_data['postalCode'],
+            phone=self.cleaned_data['phone'],
+            product=product,
+            user=user
+        )
+        
+        if self.cleaned_data['imageProfile']:
+            person.imageProfile = self.cleaned_data['imageProfile']
+            
+        person.save()
+        return person
