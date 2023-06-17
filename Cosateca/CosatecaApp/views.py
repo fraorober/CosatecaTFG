@@ -4,6 +4,7 @@ from django.contrib import messages
 from .forms import *
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 
 
 # Create your views here.
@@ -30,12 +31,19 @@ def register(request):
 
 @login_required
 def inicio_sesion(request):
-    products = Product.objects.all()
+    list_products = Product.objects.all()
+    paginator = Paginator(list_products, 4)
+    page = request.GET.get("page") or 1
+    products = paginator.get_page(page)
+    current_page=int(page) #Page on that we are situated
+    pages = range(1, products.paginator.num_pages + 1) # +1 because in range the last number are not included
+    numPages = len(pages)
+    
     current_date = date.today()
     seven_days_ago = current_date - timedelta(days=7)
     new_products = [product for product in products if product.publicationDate >= seven_days_ago]
         
-    return render(request, 'inicio.html', {'products': products, 'new_products': new_products}) 
+    return render(request, 'inicio.html', {'products': products, 'new_products': new_products, 'pages': pages, 'current_page': current_page, 'numPages': numPages}) 
 
 @login_required
 def logout_view(request):
@@ -146,7 +154,14 @@ def products_of_logged_user(request):
     current_date = date.today()
     seven_days_ago = current_date - timedelta(days=7)
     new_products = [product for product in products if product.publicationDate >= seven_days_ago]
-    return render(request, 'my_products.html', {'products': products, 'new_products': new_products})
+    
+    paginator = Paginator(products, 12)
+    page = request.GET.get("page") or 1
+    products = paginator.get_page(page)
+    current_page=int(page) #Page on that we are situated
+    pages = range(1, products.paginator.num_pages + 1) # +1 because in range the last number are not included
+    numPages = len(pages)
+    return render(request, 'my_products.html', {'products': products, 'new_products': new_products, 'pages': pages, 'current_page': current_page, 'numPages': numPages})
 
 @login_required
 def delete_product_upload_of_logged_user(request, product_id):
@@ -196,9 +211,15 @@ def visit_profile_user(request, username):
     for product in products:
         reviews = Rating.objects.filter(product__id=product.id).count()
         numRatings+=reviews
-
+        
+    paginator = Paginator(products, 4)
+    page = request.GET.get("page") or 1
+    products = paginator.get_page(page)
+    current_page=int(page) #Page on that we are situated
+    pages = range(1, products.paginator.num_pages + 1) # +1 because in range the last number are not included
+    numPages = len(pages)
     
-    return render(request, 'visit_user_profile.html', {'products': products, 'person': person, 'numProducts': numProducts, 'numRatings': numRatings})
+    return render(request, 'visit_user_profile.html', {'products': products, 'person': person, 'numProducts': numProducts, 'numRatings': numRatings, 'pages': pages, 'current_page': current_page, 'numPages': numPages})
 
 @login_required
 def report_user(request, username):

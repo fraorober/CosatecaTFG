@@ -19,9 +19,17 @@ class Person(models.Model):
 
 class Category(models.TextChoices):
     
-    DEPORTES = "DEPORTES"
-    MAQUINARIA = "MAQUINARIA"
-    HERRAMIENTAS = "HERRAMIENTAS"
+    SPORTS = "SPORTS"
+    MACHINERY = "MACHINERY"
+    TOOLS = "TOOLS"
+    GARDENING = "GARDENING"
+    VIDEOGAMES = "VIDEOGAMES"
+    CONSOLES = "CONSOLES"
+    BOOKS = "BOOKS"
+    PCs = "PCs"
+    TABLETS = "TABLETS"
+    MOBILE_PHONE = "MOBILE PHONE"
+    ART = "ART"  
 
 class Product(models.Model):
     

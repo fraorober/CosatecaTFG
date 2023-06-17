@@ -100,7 +100,7 @@ class InicioSesion(forms.Form):
     
 class ProductForm(forms.Form):
     name = forms.CharField(max_length=60)
-    image = forms.ImageField(required=False)
+    image = forms.ImageField(required=True)
     description = forms.CharField(max_length=500, widget=forms.Textarea)
     category = forms.ChoiceField(choices=Category.choices)    
     

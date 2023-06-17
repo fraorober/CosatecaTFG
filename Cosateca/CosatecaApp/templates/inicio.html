@@ -4,12 +4,19 @@
 
 <head>
     <title>
-        Init
+        Home
     </title>
     {%include "navbar.html" %}
 
     <link href="/static/css/card.css" rel="stylesheet">
     <link href="/static/css/messages.css" rel="stylesheet">
+
+    <style>
+        .pagination-wrapper {
+            display: flex;
+            justify-content: center;
+        }
+    </style>
 
 </head>
 
@@ -55,7 +62,13 @@
                             </div> 
                         </div>
                     {% endfor %}
+
                 </div>
+                
+                <div class="pagination-wrapper" >
+                    {% include "pagination.html" %}
+                </div>
+                
             {% endif %}
         </div> 
     </main>
