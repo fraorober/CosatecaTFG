@@ -34,6 +34,7 @@ def inicio_sesion(request):
     current_date = date.today()
     seven_days_ago = current_date - timedelta(days=7)
     new_products = [product for product in products if product.publicationDate >= seven_days_ago]
+        
     return render(request, 'inicio.html', {'products': products, 'new_products': new_products}) 
 
 @login_required
@@ -182,3 +183,32 @@ def edit_product_upload_by_logged_user(request, product_id):
         })
 
     return render(request, 'edit_product_upload_by_user_info.html', {'form': form, 'product': product})
+
+@login_required
+def visit_profile_user(request, username):
+    person = Person.objects.get(user__username=username)
+    
+    products = Product.objects.filter(userWhoUploadProduct__id=person.id)
+    
+    numProducts = Product.objects.filter(userWhoUploadProduct__id=person.id).count()
+        
+    numRatings = 0
+    for product in products:
+        reviews = Rating.objects.filter(product__id=product.id).count()
+        numRatings+=reviews
+
+    
+    return render(request, 'visit_user_profile.html', {'products': products, 'person': person, 'numProducts': numProducts, 'numRatings': numRatings})
+
+@login_required
+def report_user(request, username):
+    reportingUser = Person.objects.get(user__id=request.user.id)
+    reportedUser = Person.objects.get(user__username=username)
+    if request.method == 'POST':
+        form = ReportForm(request.POST)
+        if form.is_valid():
+            form.save(reportingUser=reportingUser, reportedUser=reportedUser)
+            return redirect('/inicio') 
+    else:
+        form = ReportForm()
+    return render(request, 'report.html', {'form': form})

@@ -80,25 +80,24 @@ class Rating(models.Model):
     def __str__(self):
         return 'Rating of ' + self.product.name + ' of ' + self.user.user.first_name + ': ' + str(self.rating)
     
-class Reason(models.Model):
+class Reason(models.TextChoices):
     
-    reason = models.CharField(max_length=60, blank=False, null=False)
-    
-    def __str__(self):
-        return self.reason
+    FRAUDULENT_BEHAVIOR  = "FRAUDULENT EHAVIOR"
+    DAMAGE_OR_LOSS_OBJECTS = "DAMAGE OR LOSS OBJECTS"
+    ILLEGAL_ACTIVITIES = "ILLEGAL ACTIVITIES"
 
     
 class Report(models.Model):
     
-    date = models.DateField(null=False, blank=False)
+    date = models.DateField(null=False, blank=False, auto_now_add=True)
     observations = models.CharField(max_length=300)
     reportedUser = models.ForeignKey(Person, null=False, on_delete=models.CASCADE)
     reportingUser = models.ForeignKey(Person, null=False, related_name='reportingUser', on_delete=models.CASCADE)
-    reason = models.ForeignKey(Reason, on_delete=models.CASCADE)
+    reason = models.CharField(Reason, choices=Reason.choices, max_length=25)
     capture = models.URLField(null=True, blank=True)
     
     def __str__(self):
-        return 'User ' + self.reportedUser.name + ' has been reported by ' + self.reportingUser.name
+        return 'User ' + self.reportedUser.user.username + ' has been reported by ' + self.reportingUser.user.username
     
 class WishList(models.Model):
     

@@ -75,13 +75,20 @@
                 <div class="card booking-card v-2 mt-2 mb-4 rounded-bottom">
                     
                     <div class="card-body">
-                      <h4 class="card-title font-weight-bold"><a>{{product.name}}</a></h4>
-                      <p class="card-text">{{product.description}}</p>
-                      <hr class="my-4">
-                      <p class="h5 font-weight-bold mb-4">Category: {{product.category}}</p>
-                      <ul class="list-unstyled d-flex justify-content-start align-items-center mb-0">
-                        <li>Updated on {{product.publicationDate}} by {{product.userWhoUploadProduct}}</li>
-                      </ul>
+                        <h4 class="card-title font-weight-bold"><a>{{product.name}}</a></h4>
+                        <p class="card-text">{{product.description}}</p>
+                        <hr class="my-4">
+                        <p class="h5 font-weight-bold mb-4">Category: {{product.category}}</p>
+                        <ul class="list-unstyled d-flex justify-content-start align-items-center mb-0">
+                            <li>Updated on {{product.publicationDate}} by 
+                                {% if product.userWhoUploadProduct.user == request.user %}
+                                    <a href="{% url 'profile'%}">{{product.userWhoUploadProduct}}</a>
+                                {% else %}                       
+                                    <a href="{% url 'visitUserProfile' product.userWhoUploadProduct.user.username %}">{{product.userWhoUploadProduct}}</a>
+                                {% endif %}
+                            </li>
+                            
+                        </ul>
                     </div>
                 </div>
                   

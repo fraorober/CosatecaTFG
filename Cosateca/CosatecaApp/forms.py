@@ -84,13 +84,16 @@ class InicioSesion(forms.Form):
     username = forms.CharField(max_length=40, error_messages={'required': 'This field is required.'})
     password = forms.CharField(max_length=40, label='Contraseña', widget=forms.PasswordInput, error_messages={'required': 'This field is required.'})
     
-    def clean_correct_password(self):
+    def clean_password(self):
         username = self.cleaned_data.get('username')
         password = self.cleaned_data.get('password')
         
-        user = User.objects.filter(username=username).get()
-                
-        if user.password != password:
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            raise forms.ValidationError('Username does not exist.')
+        
+        if not user.check_password(password):
             raise forms.ValidationError('Incorrect credentials.')
         
         return password
@@ -179,3 +182,19 @@ class EditInfoUserForm(forms.Form):
             
         person.save()
         return person
+    
+class ReportForm(forms.Form):
+    observations = forms.CharField(label='Observations', max_length=300)
+    reason = forms.ChoiceField(label='Reason', choices=Reason.choices)
+    capture = forms.URLField(label='Capture', required=True)
+    
+    def save(self, reportingUser, reportedUser):
+        report = Report(
+            observations = self.cleaned_data['observations'],
+            reportedUser = reportedUser,
+            reportingUser = reportingUser,
+            reason = self.cleaned_data['reason'],
+            capture=self.cleaned_data['capture']
+        )
+        report.save()
+        return report

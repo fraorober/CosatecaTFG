@@ -36,6 +36,8 @@ urlpatterns = [
     path('myProducts', views.products_of_logged_user, name='myProducts'),
     path('product/delete/<int:product_id>', views.delete_product_upload_of_logged_user, name='deleteProductUploadByLoggedUser'),
     path('product/edit/<int:product_id>', views.edit_product_upload_by_logged_user, name='editProductUploadByLoggedUser'),
+    path('profile/<str:username>', views.visit_profile_user, name='visitUserProfile'),
+    path('report/<str:username>', views.report_user, name='reportUser'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

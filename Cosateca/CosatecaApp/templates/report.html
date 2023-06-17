@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>
+        Edit Review
+    </title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    {%include "navbar.html" %}
+    {% load crispy_forms_tags %}
+    <link href="/static/css/ratingStars.css" rel="stylesheet">
+
+
+
+</head>
+
+<body>
+
+    <div class="container">
+        <br>
+        <div class="row">
+
+            <div class="col-12 col-md offset-md">
+                
+                <div class="card">
+
+                    <div class="card-body">
+
+                        <h2 class="Titulo Registro"> Edit Review</h2>
+                        <hr>
+                        <form action="" method="post" id="formReport">
+
+                            {% csrf_token %}
+
+                            {% if form.errors %}
+                                <div class="alert alert-danger mt-3">
+                                <ul>
+                                    {% for field in form %}
+                                    {% for error in field.errors %}
+                                        <li>{{ field.label }}: {{ error }}</li>
+                                    {% endfor %}
+                                    {% endfor %}
+                                </ul>
+                                </div>
+                            {% endif %}
+
+                            {{form | crispy}}
+
+                                <a href="/inicio" class="btn btn-warning float-left"> Back to menu</a>
+                                <input type="submit" value="Report" class="btn btn-danger float-right" onclick="confirmSubmit()">
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+
+                <div>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        function confirmSubmit() {
+          if (confirm('Are you sure you want to save the report?')) {
+            document.getElementById('formReport').submit();
+          }
+        }
+    </script>
+   
+</body>  
+
+<footer>
+    {%include "footer.html" %}
+
+</footer>
+
+</html>

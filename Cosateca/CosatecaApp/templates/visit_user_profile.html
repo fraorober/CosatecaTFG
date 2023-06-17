@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>
+        Profile of {{person.user.username}}
+    </title>
+    {%include "navbar.html" %}
+
+    <link href="/static/css/zoomImage.css" rel="stylesheet">
+    <link href="/static/css/profile.css" rel="stylesheet">
+    <link href="/static/css/ratingStars.css" rel="stylesheet">
+    <link href="/static/css/card.css" rel="stylesheet">
+    <link href="/static/css/messages.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    
+</head>
+
+<body>
+
+    <div class="container">
+        <br>
+        <h3>Profile of {{person.user.username}}</h3>
+        <hr>
+
+        <div class="row">
+            <div class="col">
+                <div style="text-align: center;">
+                    {% if person.imageProfile %}
+                        {% if person.imageProfile == False %}
+                            <img src="/media/noPhotoProfile.webp" alt="Imagen de perfil" class="photoProfile img-fluid" >
+                        {% else %}
+                            <img src="/media/{{person.imageProfile}}" alt="Imagen de perfil" class="photoProfile img-fluid">
+                        {% endif %}
+                    {% else %}                
+                            <img src="/media/noPhotoProfile.webp" alt="Imagen de perfil" class="photoProfile img-fluid">
+                    {% endif %}
+                </div>
+
+            </div>
+            <div class="col">
+                <div style="text-align: center">
+                    <a href="{% url 'reportUser' person.user.username %}" class="btn btn-danger">Report</a>
+                    <br>
+                </div>
+                <br>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Name</i></span>
+                    <input type="text" class="form-control" value="{{person.user.first_name}}">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Last Name</i></span>
+                    <input type="text" class="form-control" value="{{person.user.last_name}}">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-envelope-at-fill"></i></span>
+                    <input type="text" class="form-control" value="{{person.user.email}}">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                    <input type="text" class="form-control" value="{{person.phone}}">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-mailbox2"></i></span>
+                    <input type="text" class="form-control" value="{{person.postalCode}}">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text"><i class="bi bi-envelope-paper"></i></span>
+                    <input type="text" class="form-control" value="{{person.address}}">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="input-group-text">Last Connection</span>
+                    <input type="text" class="form-control" value="{{person.user.last_login}}">
+                </div>
+                <div class="input-group mb-3">
+                    <span class="group-text">This user has uploaded a total of {{numProducts}} products and has a total of {{numRatings}} ratings among all their products.</span>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="container-fluid cardProduct bg-trasparent my-4 p-3" style="position: relative;">
+                <h4>Products of this user</h4>
+                {% if messages %}
+                                    
+                    {% for mensaje in messages %}
+                        <div class="correcto"> {{ mensaje }}</div>
+                    {% endfor %}
+                    
+                {% endif %}
+                {% if products %}
+    
+                    <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-4 g-3">
+                        {% for product in products %}
+                            <div class="col"> 
+                                <div class="card h-100 shadow-sm"> 
+                                {% if product.image %}
+                                    {% if product.image != "False" %}
+                                        <img src="/media/{{product.image}}" alt="Product Image" class="card-img-top img-fluid">
+                                    {% else %}
+                                        <img src="/media/noPhoto.jpg" alt="Product Image" class="card-img-top img-fluid">
+                                    {% endif %}
+                                {% else %}
+                                    <img src="/media/noPhoto.jpg" alt="Product Image" class="card-img-top img-fluid">
+                                {% endif %}
+    
+                                    <div class="card-body"> 
+                                        <div class="clearfix mb-3"> 
+                                            <span class="float-start badge rounded-pill bg-primary">{{product.category}}</span>
+                                            {% if product in new_products %}
+                                                <span class="float-end badge rounded-pill bg-danger newProduct">New</span>
+                                            {% endif %}
+                                        </div>
+                                        <h2 class="card-title">{{product.name}}</h2>  
+                                        <h2 class="text">{{product.description}}</h2> 
+                                        <div class="text-center my-4"> 
+                                            <a href="/product/{{product.id}}" class="btn btn-warning">Check offer</a>
+                                        </div> 
+                                    </div> 
+                                </div> 
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>   
+
+<footer>
+    {%include "footer.html" %}
+</footer>
+</html>
