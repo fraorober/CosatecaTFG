@@ -38,7 +38,10 @@ class Product(models.Model):
     description = models.CharField(max_length=500, blank=False, null=False)
     category = models.CharField(Category, choices=Category.choices, max_length=12)
     publicationDate = models.DateField(auto_now_add=True ,blank=False, null=False)
-    userWhoUploadProduct = models.ForeignKey(Person, null=False, on_delete=models.CASCADE)
+    userWhoUploadProduct = models.ForeignKey(Person, related_name='whoUpload', null=False, on_delete=models.CASCADE)
+    userWhoRentProduct = models.ForeignKey(Person, related_name='whoRent', null=True, on_delete=models.CASCADE)
+    availab = models.BooleanField(default=True)
+
     
     def __str__(self):
         return self.name + ' added in ' + self.publicationDate.strftime('%d-%m-%Y') + ' by ' + self.userWhoUploadProduct.user.username

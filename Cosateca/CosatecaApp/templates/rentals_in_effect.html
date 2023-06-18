@@ -4,7 +4,7 @@
 
 <head>
     <title>
-        My Products
+        Rentals
     </title>
     {%include "navbar.html" %}
 
@@ -17,9 +17,9 @@
     <main> 
         <div class="container-fluid cardProduct bg-trasparent my-4 p-3" style="position: relative;">
 
-            <h3>My Products</h3>
+            <h3>My Rentals In Effect</h3>
             <hr>
-            <h6>In this section you can find all those objects that you have uploaded to the platform for the rest of the users to rent.</h6>  
+            <h6>This is a list of products that you have reserved.</h6>  
             <br>
             
             {% if products %}
@@ -48,21 +48,10 @@
                                     <h2 class="card-title">{{product.name}}</h2>  
                                     <h2 class="text">{{product.description}}</h2> 
                                     <div class="text-center my-4">
-                                        <hr>
-                                        <div>
-                                            <a href="{% url 'editProductUploadByLoggedUser' product.id %}" class="btn btn-success">Edit</a>
-                                        </div>
-                                        <hr>
-                                        <div>
-                                            <a href="{% url 'deleteProductUploadByLoggedUser' product.id %}" class="btn btn-danger">Delete</a>
-                                        </div>
+                                        
                                         <hr>
                                         <div>
                                             <a href="/product/{{product.id}}" class="btn btn-warning">Check offer</a>
-                                        </div>
-                                        <hr>
-                                        <div>
-                                            <a href="/product/{{product.id}}/returned" class="btn btn-primary">Returned Product</a>
                                         </div>
                                 
                                     </div> 

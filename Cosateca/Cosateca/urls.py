@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.index, name='inicio'),
+    path('', views.index, name='index'),
     path('register/', views.register, name ="register"),
     path('accounts/', include('django.contrib.auth.urls')),
     path('inicio/', views.inicio_sesion, name="inicio"),
@@ -38,7 +38,10 @@ urlpatterns = [
     path('product/edit/<int:product_id>', views.edit_product_upload_by_logged_user, name='editProductUploadByLoggedUser'),
     path('profile/<str:username>', views.visit_profile_user, name='visitUserProfile'),
     path('report/<str:username>', views.report_user, name='reportUser'),
-
+    path('product/<int:product_id>/reserve', views.reserve_object, name="reserve_product"),
+    path('contact', views.contact, name="contact"),
+    path('myRentals', views.my_rentals_in_effects, name="rentals_in_effect"),
+    path('product/<int:product_id>/returned', views.return_product, name="return_product"),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

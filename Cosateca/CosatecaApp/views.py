@@ -10,11 +10,19 @@ from django.core.paginator import Paginator
 # Create your views here.
 
 def index(request):
-    products = Product.objects.all()
+    list_products = Product.objects.all()
+    paginator = Paginator(list_products, 4)
+    page = request.GET.get("page") or 1
+    products = paginator.get_page(page)
+    current_page=int(page) #Page on that we are situated
+    pages = range(1, products.paginator.num_pages + 1) # +1 because in range the last number are not included
+    numPages = len(pages)
+    
     current_date = date.today()
     seven_days_ago = current_date - timedelta(days=7)
     new_products = [product for product in products if product.publicationDate >= seven_days_ago]
-    return render(request, 'inicio.html', {'products': products, 'new_products': new_products}) 
+        
+    return render(request, 'inicio.html', {'products': products, 'new_products': new_products, 'pages': pages, 'current_page': current_page, 'numPages': numPages}) 
 
 def register(request):
     if request.method == 'POST':
@@ -62,7 +70,6 @@ def upload_product(request):
         form = ProductForm()
     return render(request, 'create_product.html', {'form': form})
 
-@login_required
 def view_product_detail(request, product_id):
     reviews = Rating.objects.filter(product__id=product_id)
     product = Product.objects.get(id=product_id)
@@ -155,7 +162,7 @@ def products_of_logged_user(request):
     seven_days_ago = current_date - timedelta(days=7)
     new_products = [product for product in products if product.publicationDate >= seven_days_ago]
     
-    paginator = Paginator(products, 12)
+    paginator = Paginator(products, 8)
     page = request.GET.get("page") or 1
     products = paginator.get_page(page)
     current_page=int(page) #Page on that we are situated
@@ -233,3 +240,58 @@ def report_user(request, username):
     else:
         form = ReportForm()
     return render(request, 'report.html', {'form': form})
+
+@login_required
+def reserve_object(request, product_id):
+    product = Product.objects.get(id=product_id)
+    person = Person.objects.get(user__id = request.user.id)
+    
+    try:
+    
+        product.userWhoRentProduct = person
+        product.availab = False
+        product.save()
+        messages.success(request, 'You have reserved this product succesfuly!')
+        return redirect('/inicio') 
+        
+    except Product.DoesNotExist:
+        pass
+
+    
+    return render(request, 'product_detail.html', {'product': product})
+
+def contact(request):
+    return render(request, 'contact.html')
+
+@login_required
+def my_rentals_in_effects(request):
+    person = Person.objects.get(user__username=request.user.username)
+    products = Product.objects.filter(userWhoRentProduct=person)
+    
+    paginator = Paginator(products, 8)
+    page = request.GET.get("page") or 1
+    products = paginator.get_page(page)
+    current_page=int(page) #Page on that we are situated
+    pages = range(1, products.paginator.num_pages + 1) # +1 because in range the last number are not included
+    numPages = len(pages)
+    
+    return render(request, 'rentals_in_effect.html', {'products': products, 'current_page': current_page, 'numPages': numPages})
+
+@login_required
+def return_product(request, product_id):
+    product = Product.objects.get(id=product_id)
+    
+    try:
+    
+        product.userWhoRentProduct = None
+        product.availab = True
+        product.save()
+        messages.success(request, 'You have successfully changed the availability of the product!')
+        return redirect('/inicio') 
+        
+    except Product.DoesNotExist:
+        pass
+
+    
+    return render(request, 'product_detail.html', {'product': product})
+    
