@@ -7,6 +7,7 @@
         Product Details
     </title>
     {%include "navbar.html" %}
+    {% load crispy_forms_tags %}
 
     <link href="/static/css/zoomImage.css" rel="stylesheet">
     <link href="/static/css/available.css" rel="stylesheet">
@@ -98,6 +99,13 @@
                             </li>
                             
                         </ul>
+                        <br>
+                        {% if add_product %}
+                            <a href="/add/{{product.id}}/wishList" class="btn btn-primary">ADD WISH LIST</a>
+
+                        {% else %}
+
+                        {% endif %}
                         <hr>
                         <div>
                             {% if product.userWhoUploadProduct.user == request.user %}

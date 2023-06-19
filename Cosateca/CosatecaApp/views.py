@@ -5,6 +5,7 @@ from .forms import *
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Q
 
 
 # Create your views here.
@@ -73,7 +74,13 @@ def upload_product(request):
 def view_product_detail(request, product_id):
     reviews = Rating.objects.filter(product__id=product_id)
     product = Product.objects.get(id=product_id)
-    return render(request, 'product_detail.html', {'product':product, 'reviews': reviews})
+    person = Person.objects.get(user__id=request.user.id)
+    products_of_logeed_user = Product.objects.filter(userWhoUploadProduct=person)
+    add_product = True
+    if product in products_of_logeed_user:
+        add_product=False
+        
+    return render(request, 'product_detail.html', {'product':product, 'reviews': reviews, 'add_product': add_product})
 
 @login_required
 def submit_review(request, product_id):
@@ -295,3 +302,120 @@ def return_product(request, product_id):
     
     return render(request, 'product_detail.html', {'product': product})
     
+def catalogue(request):
+    all_products = Product.objects.all()
+    products = []
+    categories = Category.values
+    
+    current_date = date.today()
+    seven_days_ago = current_date - timedelta(days=7)
+    new_products = [product for product in all_products if product.publicationDate >= seven_days_ago]
+
+    try:
+        if request.method == 'POST':
+            form = FilterForm(request.POST)
+            if form.is_valid():
+                if form.cleaned_data['category']:
+                    productsWithCategory = Product.objects.filter(category=form.cleaned_data['category'])
+                    if productsWithCategory.exists():
+                        for product in productsWithCategory:
+                            products.append(product)
+                    else:
+                        messages.error(request, 'This category has not any product yet')
+                
+                elif (form.cleaned_data['novelty']):
+                    fecha_actual = datetime.now().date()
+                    fecha_limite = fecha_actual - timedelta(days=7)
+                    newProducts = Product.objects.filter(publicationDate__gte=fecha_limite)
+                    for product in newProducts:
+                        products.append(product)
+                
+        else:
+            form = FilterForm()        
+    
+    except Product.DoesNotExist:
+        pass
+    
+    return render(request, 'catalogue.html', {'products': products, 'new_products':new_products, 'form': form, 'categories': categories})
+
+@login_required
+def wish_list_of_loggued_user(request):
+    person = Person.objects.get(user__username=request.user.username)
+    wishLists = WishList.objects.filter(owner=person)
+    return render(request, 'wish_lists.html', {'wishLists': wishLists})
+
+@login_required
+def create_wish_list(request):
+    person = Person.objects.get(user__username=request.user.username)
+    
+    if request.method == 'POST':
+        form = WishListForm(request.POST)
+        if form.is_valid():
+            wishList = WishList()
+            wishList.name = form.cleaned_data['name']
+            wishList.owner = person
+            wishList.save()
+            messages.success(request, 'Wish list has been created succesfuly!')
+            return redirect('/myWishLists')
+    else:
+        form = WishListForm()
+    return render(request, 'create_wish_list.html', {'form': form})
+
+@login_required
+def view_wish_list(request, wish_list_id):
+    product_in_list = ProductsInList.objects.filter(wishList__id = wish_list_id)
+    return render(request, 'wish_list.html', {'product_in_list': product_in_list})
+
+@login_required
+def delete_wish_list(request, wish_list_id):
+    wishList = WishList.objects.get(id = wish_list_id)
+    try:
+        wishList.delete()
+        messages.success(request, 'The wish list has been deleted succesfuly!')
+        
+    except WishList.DoesNotExist:
+        pass
+    
+    return redirect('/myWishLists')
+
+@login_required
+def add_product_wish_list(request, product_id):
+    product = Product.objects.get(id=product_id)
+    person = Person.objects.get(user_id=request.user.id)
+
+    wishListsOfLoggeduser = WishList.objects.filter(owner=person)
+
+    if request.method == 'POST':
+        form = ProductInList(request.POST, user=request.user)
+        if form.is_valid():
+            wish_list_name = form.cleaned_data['wish_list']
+
+            try:
+                product_in_list_exist = ProductsInList.objects.get(wishList__name=wish_list_name, product__id=product_id)
+
+                messages.error(request, 'The product is already in this wish list.')
+                return redirect('add_product_to_wish_list', product_id=product_id)
+            
+            except ProductsInList.DoesNotExist:
+                wish_list = WishList.objects.get(owner=person, name=wish_list_name)
+                product_in_list = ProductsInList.objects.create(wishList=wish_list, product=product)
+                product_in_list.save()
+                
+                messages.success(request, 'The product was successfully added to the wish list.')
+                return redirect('/myWishLists')
+    else:
+        form = ProductInList(user=request.user)
+
+    return render(request, 'add_product_to_wish_list.html', {'form': form, 'wishListsOfLoggeduser': wishListsOfLoggeduser})
+
+@login_required
+def delete_product_of_wish_list(request, wish_list_id, product_id):
+    product_in_list = ProductsInList.objects.get(wishList__id = wish_list_id, product__id=product_id)
+    try:
+        product_in_list.delete()
+        messages.success(request, 'The product has been successfully delisted!')
+        
+    except WishList.DoesNotExist:
+        pass
+    
+    return redirect('view_wish_list', wish_list_id=wish_list_id)

@@ -29,7 +29,7 @@ class Category(models.TextChoices):
     PCs = "PCs"
     TABLETS = "TABLETS"
     MOBILE_PHONE = "MOBILE PHONE"
-    ART = "ART"  
+    ART = "ART"
 
 class Product(models.Model):
     

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>
+        My Wish Lists
+    </title>
+    {%include "navbar.html" %}
+    <link href="/static/css/card.css" rel="stylesheet">
+    <link href="/static/css/messages.css" rel="stylesheet">
+    {% load crispy_forms_tags %}
+
+</head>
+
+<body>
+    <main> 
+        <div class="container-fluid cardProduct bg-trasparent my-4 p-3" style="position: relative;">
+
+            <h3>My Whish List</h3>
+            <hr>
+            <h6>In this section you can find all wish lists that you have created!</h6>  
+            <br>
+
+            {% if messages %}
+                                
+                {% for mensaje in messages %}
+                    <div class="info"> {{ mensaje }}</div>
+                {% endfor %}
+                
+            {% endif %}
+
+            <div class="col-md">
+
+
+            
+                {% if wishLists %}
+                    
+                    <table class="table table-dark">
+                            <thead class="thead">
+                                <tr>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Action</th>
+
+                                </tr>
+                            </thead>
+                            {% for wishList in wishLists %}
+
+                                <tbody>
+                                <tr>
+                                    <td><a href="/wishList/{{wishList.id}}" class="btn btn-primary">{{wishList.name}}</a></td>
+                                    <td><a href="/delete/wishList/{{wishList.id}}" class="btn btn-danger">Delete</a></td>
+                                </tr>
+                                </tbody>
+                            {% endfor %}
+
+                    </table>
+
+                    <br>
+                    <h5>Do you want create another?</h5> 
+                    
+                    <a href="create/WishList" class="btn btn-success">CREATE WISH LIST</a> 
+                    
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    
+                {% else %}
+
+                    <div>
+                        <h5>You do not have wish list yet. Do you want create one?</h5> 
+                        <a href="create/WishList" class="btn btn-success">CREATE WISH LIST</a> 
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+
+                {% endif %}
+            </div>
+        </div> 
+    </main>
+    
+   
+</body>           
+<footer>
+    {%include "footer.html" %}
+
+</footer>
+
+</html>

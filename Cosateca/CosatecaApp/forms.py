@@ -198,3 +198,25 @@ class ReportForm(forms.Form):
         )
         report.save()
         return report
+    
+class FilterForm(forms.Form):
+    category = forms.ChoiceField(choices=Category.choices)
+    novelty = forms.BooleanField(initial='False', required=False)
+    
+class WishListForm(forms.ModelForm):
+    class Meta:
+        model = WishList
+        fields = ['name']
+        labels = {'name': 'Name'}
+        widgets = {'name': forms.TextInput(attrs={'class': 'form-control'})}
+        
+class ProductInList(forms.Form):
+    wish_list = forms.ModelChoiceField(queryset=WishList.objects.all())
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')  
+        super(ProductInList, self).__init__(*args, **kwargs)
+
+        wishlists = WishList.objects.filter(owner__user_id=user.id)
+
+        self.fields['wish_list'].choices = [(wishlist.id, wishlist.name) for wishlist in wishlists]

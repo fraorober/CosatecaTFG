@@ -42,6 +42,13 @@ urlpatterns = [
     path('contact', views.contact, name="contact"),
     path('myRentals', views.my_rentals_in_effects, name="rentals_in_effect"),
     path('product/<int:product_id>/returned', views.return_product, name="return_product"),
+    path('catalogue', views.catalogue, name="catalogue"),
+    path('myWishLists', views.wish_list_of_loggued_user, name="wishLists"),
+    path('create/WishList', views.create_wish_list, name="create_list"),
+    path('wishList/<int:wish_list_id>', views.view_wish_list, name="view_wish_list"),
+    path('delete/wishList/<int:wish_list_id>', views.delete_wish_list, name="delete_wish_list"),
+    path('add/<int:product_id>/wishList', views.add_product_wish_list, name="add_product_to_wish_list"),
+    path('quit/product/<int:product_id>/wishList/<int:wish_list_id>', views.delete_product_of_wish_list, name="delete_product_of_wish_list"),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
