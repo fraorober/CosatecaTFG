@@ -19,15 +19,21 @@
     <main> 
         <div class="container-fluid cardProduct bg-trasparent my-4 p-3" style="position: relative;">
 
-            <h3>Catalogue</h3>
-            <hr>
-            <h6>In this section you can see all objects and you can filter for some fields.</h6>
+            <div class="row">
+                <h3>Catalogue</h3>
+                <hr>
+                <div class="col">
+                    <h6>In this section you can see all objects and you can filter for some fields.</h6>
+                </div>
 
+                <br>
+                <br>
+            </div>
             <br>
             
             <div class="row">
                 <div class="col-md-4">
-                    <form action="" method="post" id="">
+                    <form action="" method="GET" id="">
 
                         {% csrf_token %}
                         {% if messages %}
@@ -36,22 +42,31 @@
                                 <div class="error"> {{ mensaje }}</div>
                             {% endfor %}
                         
-                        {% endif %} 
-
+                        {% endif %}
+                        <label for="id_name"> Search for name or some words of description:</label>
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search" id="id_name">
+                        <br>
                         <div>
+                            
                             <label for="id_category">Category:</label>
                             <select name="category" id="id_category" class='form-control'>
-                                <option value="" selected disabled>Select a option</option>
+                                <option selected disabled>Select a option</option>
                                 {% for choice in categories %}
                                     <option value="{{ choice }}">{{ choice }}</option>
                                 {% endfor %}
                             </select>
-                          </div>
-                          <br>
-                          <div class="form-control">
-                            <input type="checkbox" name="novelty" id="id_novelty">
-                            <label for="id_novelty">Novelty</label>
-                          </div>
+                        </div>
+                        <br>
+                        <div >
+                            <label for="id_novelty">If you check this, we show you the products in the last days:</label>
+                            <div class="form-control">
+                                <input type="checkbox" name="novelty" id="id_novelty">
+                                <label for="id_novelty">Last 7 days</label>
+                            </div>
+
+                        </div>
+                        <br>
+                          
 
                         <br>
                         <input type="submit" value="Search" class="btn btn-success float-right">

@@ -312,31 +312,61 @@ def catalogue(request):
     new_products = [product for product in all_products if product.publicationDate >= seven_days_ago]
 
     try:
-        if request.method == 'POST':
-            form = FilterForm(request.POST)
-            if form.is_valid():
-                if form.cleaned_data['category']:
-                    productsWithCategory = Product.objects.filter(category=form.cleaned_data['category'])
-                    if productsWithCategory.exists():
-                        for product in productsWithCategory:
-                            products.append(product)
-                    else:
-                        messages.error(request, 'This category has not any product yet')
-                
-                elif (form.cleaned_data['novelty']):
-                    fecha_actual = datetime.now().date()
-                    fecha_limite = fecha_actual - timedelta(days=7)
-                    newProducts = Product.objects.filter(publicationDate__gte=fecha_limite)
-                    for product in newProducts:
-                        products.append(product)
-                
+        queryset = request.GET.get("search")
+        querysetCatg = request.GET.get("category")
+        querysetNov = request.GET.get("novelty")
+        print(querysetCatg)
+        if querysetCatg and queryset and querysetNov:
+            products = Product.objects.filter(
+                Q(category=querysetCatg) &
+                (Q(name=queryset) | Q(description=queryset)) &
+                Q(publicationDate__gte=seven_days_ago)
+            ).distinct()
+
+        elif querysetCatg and queryset:
+            products = Product.objects.filter(
+                Q(category=querysetCatg) &
+                (Q(name=queryset) | Q(description=queryset))
+            ).distinct()
+
+        elif querysetCatg and querysetNov:
+            products = Product.objects.filter(
+                Q(category=querysetCatg) &
+                Q(publicationDate__gte=seven_days_ago)
+            ).distinct()
+
+        elif queryset and querysetNov:
+            products = Product.objects.filter(
+                (Q(name=queryset) | Q(description=queryset)) &
+                Q(publicationDate__gte=seven_days_ago)
+            ).distinct()
+
+        elif querysetCatg:
+            products = Product.objects.filter(
+                category=querysetCatg
+            ).distinct()
+
+        elif queryset:
+            products = Product.objects.filter(
+                Q(name=queryset) | Q(description=queryset)
+            ).distinct()
+
+        elif querysetNov:
+            products = Product.objects.filter(
+                publicationDate__gte=seven_days_ago
+            ).distinct()
+
         else:
-            form = FilterForm()        
+            products = all_products
+            
+        if not products:
+            error_message = "There is no product that meets the search conditions."
+            messages.error(request, error_message)
     
     except Product.DoesNotExist:
         pass
     
-    return render(request, 'catalogue.html', {'products': products, 'new_products':new_products, 'form': form, 'categories': categories})
+    return render(request, 'catalogue.html', {'products': products, 'new_products':new_products, 'categories': categories})
 
 @login_required
 def wish_list_of_loggued_user(request):
