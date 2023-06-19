@@ -74,11 +74,14 @@ def upload_product(request):
 def view_product_detail(request, product_id):
     reviews = Rating.objects.filter(product__id=product_id)
     product = Product.objects.get(id=product_id)
-    person = Person.objects.get(user__id=request.user.id)
-    products_of_logeed_user = Product.objects.filter(userWhoUploadProduct=person)
-    add_product = True
-    if product in products_of_logeed_user:
-        add_product=False
+    person = None
+    add_product = False
+    
+    if request.user.is_authenticated:
+        person = Person.objects.get(user__id=request.user.id)
+        products_of_logged_user = Product.objects.filter(userWhoUploadProduct=person)
+        if product not in products_of_logged_user:
+            add_product = True
         
     return render(request, 'product_detail.html', {'product':product, 'reviews': reviews, 'add_product': add_product})
 
@@ -147,6 +150,7 @@ def edit_user_info(request):
             person.postalCode = form.cleaned_data['postalCode']
             person.imageProfile = form.cleaned_data['imageProfile']
             person.phone = form.cleaned_data['phone']
+            person.user.save()
             person.save()
             return redirect('/inicio')
     else: #Rellena con los campos ya existentes
@@ -372,7 +376,15 @@ def catalogue(request):
 def wish_list_of_loggued_user(request):
     person = Person.objects.get(user__username=request.user.username)
     wishLists = WishList.objects.filter(owner=person)
-    return render(request, 'wish_lists.html', {'wishLists': wishLists})
+    
+    paginator = Paginator(wishLists, 4)
+    page = request.GET.get("page") or 1
+    wishLists = paginator.get_page(page)
+    current_page=int(page) #Page on that we are situated
+    pages = range(1, wishLists.paginator.num_pages + 1) # +1 because in range the last number are not included
+    numPages = len(pages)
+    
+    return render(request, 'wish_lists.html', {'wishLists': wishLists, 'current_page': current_page, 'numPages': numPages})
 
 @login_required
 def create_wish_list(request):
@@ -394,7 +406,15 @@ def create_wish_list(request):
 @login_required
 def view_wish_list(request, wish_list_id):
     product_in_list = ProductsInList.objects.filter(wishList__id = wish_list_id)
-    return render(request, 'wish_list.html', {'product_in_list': product_in_list})
+    
+    paginator = Paginator(product_in_list, 4)
+    page = request.GET.get("page") or 1
+    wishList = paginator.get_page(page)
+    current_page=int(page) #Page on that we are situated
+    pages = range(1, wishList.paginator.num_pages + 1) # +1 because in range the last number are not included
+    numPages = len(pages)
+    
+    return render(request, 'wish_list.html', {'wishList': wishList, 'current_page': current_page, 'numPages': numPages})
 
 @login_required
 def delete_wish_list(request, wish_list_id):
@@ -452,3 +472,172 @@ def delete_product_of_wish_list(request, wish_list_id, product_id):
 
 def help(request):
     return render(request, 'help.html')
+
+@login_required
+def list_users(request):
+    person = Person.objects.get(user=request.user)
+    personList = [person]
+    query = Person.objects.all()
+
+    people = query.exclude(pk__in=[p.pk for p in personList])
+    
+    paginator = Paginator(people, 4)
+    page = request.GET.get("page") or 1
+    people = paginator.get_page(page)
+    current_page=int(page) #Page on that we are situated
+    pages = range(1, people.paginator.num_pages + 1) # +1 because in range the last number are not included
+    numPages = len(pages)
+    
+    return render(request, 'users_list.html', {'people': people, 'current_page': current_page, 'numPages': numPages})
+
+@login_required
+def delete_user(request, user_id):
+    person = Person.objects.get(user__id=user_id)
+    try:
+        person.delete()
+        messages.success(request, 'The user has been deleted successfully!')
+        
+    except Person.DoesNotExist:
+        pass
+    
+    return redirect('users')
+
+@login_required
+def ban_user(request, user_id):
+    person = Person.objects.get(user__id=user_id)
+    try:
+        person.user.is_active = False
+        person.user.save()
+        person.save()
+        messages.success(request, 'The user has been banned successfully!')
+        
+    except Person.DoesNotExist:
+        pass
+    
+    return redirect('users')
+
+@login_required
+def unban_user(request, user_id):
+    person = Person.objects.get(user__id=user_id)
+    try:
+        person.user.is_active = True
+        person.user.save()
+        person.save()
+        messages.success(request, 'The user has been unbanned successfully!')
+        
+    except Person.DoesNotExist:
+        pass
+    
+    return redirect('users')
+
+@login_required
+def edit_user(request, user_id):
+    person = Person.objects.get(user__id=user_id)
+    
+    if request.method == 'POST':
+        form = EditInfoUserForm(request.POST,  request.FILES)
+        if form.is_valid():
+            person.user.first_name = form.cleaned_data['first_name']
+            person.user.last_name = form.cleaned_data['last_name']
+            person.address = form.cleaned_data['address']
+            person.postalCode = form.cleaned_data['postalCode']
+            person.imageProfile = form.cleaned_data['imageProfile']
+            person.phone = form.cleaned_data['phone']
+            person.user.save()
+            person.save()
+            messages.success(request, 'The user has been updated successfully!')
+            return redirect('/users')
+    else: #Rellena con los campos ya existentes
+        form = EditInfoUserForm(initial={
+            'first_name': person.user.first_name,
+            'last_name': person.user.last_name,
+            'address': person.address,
+            'postalCode': person.postalCode,
+            'imageProfile': person.imageProfile,
+            'phone': person.phone
+        })
+
+    return render(request, 'edit_user_admin.html', {'form': form, 'person': person})
+
+@login_required
+def admin_create_user(request):
+    if request.method == 'POST':
+        form = RegistrationForm(request.POST, request.FILES)
+        
+        if form.is_valid():            
+            form.save()
+            messages.success(request, 'The user has been updated successfully!')
+
+            return redirect('users')            
+        
+    else:
+        form = RegistrationForm()
+        
+    return render(request, 'create_user_admin.html', {'form': form})
+
+@login_required
+def list_products(request):
+    products = Product.objects.all()
+    
+    paginator = Paginator(products, 4)
+    page = request.GET.get("page") or 1
+    products = paginator.get_page(page)
+    current_page=int(page) #Page on that we are situated
+    pages = range(1, products.paginator.num_pages + 1) # +1 because in range the last number are not included
+    numPages = len(pages)
+    
+    return render(request, 'products_lists.html', {'products': products, 'current_page': current_page, 'numPages': numPages})
+
+@login_required
+def admin_create_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        
+        if form.is_valid():
+            user = request.user  #Usuario actualmente autenticado            
+            form.save(user)
+            messages.success(request, 'The product has been updated successfully!')
+
+            return redirect('/products')            
+        
+    else:
+        form = ProductForm()
+        
+    return render(request, 'create_product_admin.html', {'form': form})
+
+@login_required
+def edit_product_admin(request, product_id):
+    product = Product.objects.get(id=product_id)
+    
+    if request.method == 'POST':
+        form = ProductForm(request.POST,  request.FILES)
+        if form.is_valid():
+            product.name = form.cleaned_data['name']
+            product.image = form.cleaned_data['image']
+            product.description = form.cleaned_data['description']
+            product.category = form.cleaned_data['category']
+            product.save()
+            messages.success(request, 'The product has been update successfully!')
+
+            return redirect('/products')
+    else: #Rellena con los campos ya existentes
+        form = ProductForm(initial={
+            'name': product.name,
+            'image': product.image,
+            'description': product.description,
+            'category': product.category
+        })
+
+    return render(request, 'edit_product_admin.html', {'form': form, 'product': product})
+
+@login_required
+def delete_product(request, product_id):
+    try:
+        product = Product.objects.get(id=product_id)
+        product.delete()
+        messages.success(request, 'The product has been deleted successfully!')
+        
+    except Person.DoesNotExist:
+        pass
+    
+    return redirect('/products')

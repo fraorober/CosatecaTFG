@@ -31,7 +31,7 @@
 
             <div class="col-md-8">
             
-                {% if product_in_list %}
+                {% if wishList %}
                     
                     <table class="table table-dark">
                             <thead class="thead">
@@ -41,7 +41,7 @@
 
                                 </tr>
                             </thead>
-                            {% for wList in product_in_list %}
+                            {% for wList in wishList %}
 
                                 <tbody>
                                 <tr>
@@ -55,8 +55,10 @@
 
                     </table>
 
-                    <br>
-                    <br>
+                    <div class="pagination-wrapper" >
+                        {% include "pagination.html" %}
+                    </div>
+
                     <br>
                     <br>
                     <br>
@@ -70,9 +72,10 @@
                 {% else %}
 
                     <div>
-                        <h5>This playlist has not objects yet!</h5> 
+                        <h5>This whish list has not objects yet!</h5> 
                         
                     </div>
+                    <br>
                     <br>
                     <br>
                     <br>

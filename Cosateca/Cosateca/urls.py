@@ -50,6 +50,16 @@ urlpatterns = [
     path('add/<int:product_id>/wishList', views.add_product_wish_list, name="add_product_to_wish_list"),
     path('quit/product/<int:product_id>/wishList/<int:wish_list_id>', views.delete_product_of_wish_list, name="delete_product_of_wish_list"),
     path('help', views.help, name="help"),
+    path('users', views.list_users, name="users"),
+    path('delete/<int:user_id>', views.delete_user, name="delete_user"),
+    path('edit/<int:user_id>', views.edit_user, name="edit_user"),
+    path('banned/<int:user_id>', views.ban_user, name="ban_user"),
+    path('create/user', views.admin_create_user, name ="create_user"),
+    path('products', views.list_products, name ="list_products"),
+    path('create/product', views.admin_create_product, name ="admin_create_product"),
+    path('edit/product/<int:product_id>', views.edit_product_admin, name="edit_product"),
+    path('delete/product/<int:product_id>', views.delete_product, name="delete_product"),
+    path('unbanned/<int:user_id>', views.unban_user, name="unbanned_user"),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

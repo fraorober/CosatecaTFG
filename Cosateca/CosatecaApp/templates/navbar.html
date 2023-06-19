@@ -35,45 +35,68 @@
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
 
               {% if request.user.is_authenticated %}
-
-                <li class="nav-item buttonNav">
-                  <a class="nav-link buttonNav" aria-current="page" href="/uploadProduct">Upload Product</a>
-                </li>
-                &nbsp;&nbsp;&nbsp;
-                <li class="nav-item buttonNav">
-                  <a class="nav-link buttonNav" aria-current="page" href="/catalogue">Catalogue</a>
-                </li>
-                &nbsp;&nbsp;&nbsp;
-                <li class="nav-item buttonNav">
-                  <a class="nav-link buttonNav" aria-current="page" href="/myProducts">My Products</a>
-                </li>
-                &nbsp;&nbsp;&nbsp;
-
-                <li class="nav-item buttonNav">
-                  <a class="nav-link buttonNav" href="/myRentals">My Rentals</a>
-                </li>
-                &nbsp;&nbsp;&nbsp;
-
-                <li class="nav-item buttonNav">
-                  <a class="nav-link buttonNav" href="/myWishLists">My Whish Lists</a>
-                </li>
-                &nbsp;&nbsp;&nbsp;
-
-                <li class="nav-item buttonNav">
-                  <a class="nav-link buttonNav" href="/contact">Contact Us</a>
-                </li>
-                &nbsp;&nbsp;&nbsp;
-                <ul>
-                  <li class="nav-item"><span class="input-group-text"><i class="bi bi-person-fill"></i></span>
-    
-                    <ul>
-                        <li><a class="nav-link buttonNav" href="/profile">Profile</a></li>
-                        <li><a class="nav-link buttonNav" href="/logout">Logout</a></li>
-                    </ul>
+                {% if request.user.is_staff%}
+                  <li class="nav-item buttonNav">
+                    <a class="nav-link buttonNav" href="/contact">Contact Us</a>
                   </li>
-                </ul>
+                  &nbsp;&nbsp;&nbsp;
+                  <li class="nav-item buttonNav">
+                    <a class="nav-link buttonNav" href="/users">Lists of Users</a>
+                  </li>
+                  &nbsp;&nbsp;&nbsp;
+                  <li class="nav-item buttonNav">
+                    <a class="nav-link buttonNav" href="/products">Lists of Products</a>
+                  </li>
+                  &nbsp;&nbsp;&nbsp;
+                  <ul>
+                    <li class="nav-item"><span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+      
+                      <ul>
+                          <li><a class="nav-link buttonNav" href="/profile">Profile</a></li>
+                          <li><a class="nav-link buttonNav" href="/logout">Logout</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+
+                {%else%}
+                  <li class="nav-item buttonNav">
+                    <a class="nav-link buttonNav" aria-current="page" href="/uploadProduct">Upload Product</a>
+                  </li>
+                  &nbsp;&nbsp;&nbsp;
+                  <li class="nav-item buttonNav">
+                    <a class="nav-link buttonNav" aria-current="page" href="/catalogue">Catalogue</a>
+                  </li>
+                  &nbsp;&nbsp;&nbsp;
+                  <li class="nav-item buttonNav">
+                    <a class="nav-link buttonNav" aria-current="page" href="/myProducts">My Products</a>
+                  </li>
+                  &nbsp;&nbsp;&nbsp;
+
+                  <li class="nav-item buttonNav">
+                    <a class="nav-link buttonNav" href="/myRentals">My Rentals</a>
+                  </li>
+                  &nbsp;&nbsp;&nbsp;
+
+                  <li class="nav-item buttonNav">
+                    <a class="nav-link buttonNav" href="/myWishLists">My Wish Lists</a>
+                  </li>
+                  &nbsp;&nbsp;&nbsp;
+
+                  <li class="nav-item buttonNav">
+                    <a class="nav-link buttonNav" href="/contact">Contact Us</a>
+                  </li>
+                  &nbsp;&nbsp;&nbsp;
+                  <ul>
+                    <li class="nav-item"><span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+      
+                      <ul>
+                          <li><a class="nav-link buttonNav" href="/profile">Profile</a></li>
+                          <li><a class="nav-link buttonNav" href="/logout">Logout</a></li>
+                      </ul>
+                    </li>
+                  </ul>
                 
-                
+                {%endif%}
 
 
               {% else %}
