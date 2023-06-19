@@ -449,3 +449,6 @@ def delete_product_of_wish_list(request, wish_list_id, product_id):
         pass
     
     return redirect('view_wish_list', wish_list_id=wish_list_id)
+
+def help(request):
+    return render(request, 'help.html')
