@@ -16,7 +16,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     {%include "navbar.html" %}
     {% load crispy_forms_tags %}
-
+    <link href="/static/css/messages.css" rel="stylesheet">
 
 
 </head>
@@ -37,17 +37,16 @@
 
                         <h2 class="Titulo Registro"> Login</h2>
                         <hr>
+                        {% if messages %}
+                                
+                            {% for mensaje in messages %}
+                                <div class="info"> {{ mensaje }}</div>
+                            {% endfor %}
+                        
+                        {% endif %}
                         <form action="" method="post" id="loginForm">
 
                             {% csrf_token %}
-
-                            {% if messages %}
-                                
-                                {% for mensaje in messages %}
-                                    {{ mensaje }}
-                                {% endfor %}
-                                
-                            {% endif %}
 
                             {{form | crispy}}
 

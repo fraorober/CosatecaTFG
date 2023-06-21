@@ -31,6 +31,7 @@ def register(request):
         
         if form.is_valid():            
             form.save()
+            messages.success(request, 'The user has been created succesfully! Now, you can log in.')
             return redirect('inicio')            
         
     else:
@@ -105,7 +106,7 @@ def delete_review(request, review_id):
         
         if rating.user.user == request.user:
             rating.delete()
-            messages.success(request, 'Rating has been deleted succesfuly!')
+            messages.success(request, 'Rating has been deleted succesfully!')
     except Rating.DoesNotExist:
         pass
     
@@ -188,7 +189,7 @@ def delete_product_upload_of_logged_user(request, product_id):
         
         if product.userWhoUploadProduct.user == request.user:
             product.delete()
-            messages.success(request, 'Product has been deleted succesfuly!')
+            messages.success(request, 'Product has been deleted succesfully!')
     except Product.DoesNotExist:
         pass
     
@@ -262,7 +263,7 @@ def reserve_object(request, product_id):
         product.userWhoRentProduct = person
         product.availab = False
         product.save()
-        messages.success(request, 'You have reserved this product succesfuly!')
+        messages.success(request, 'You have reserved this product succesfully!')
         return redirect('/inicio') 
         
     except Product.DoesNotExist:
@@ -366,11 +367,18 @@ def catalogue(request):
         if not products:
             error_message = "There is no product that meets the search conditions."
             messages.error(request, error_message)
+            
+        paginator = Paginator(products, 15)
+        page = request.GET.get("page") or 1
+        products = paginator.get_page(page)
+        current_page=int(page) #Page on that we are situated
+        pages = range(1, products.paginator.num_pages + 1) # +1 because in range the last number are not included
+        numPages = len(pages)
     
     except Product.DoesNotExist:
         pass
     
-    return render(request, 'catalogue.html', {'products': products, 'new_products':new_products, 'categories': categories})
+    return render(request, 'catalogue.html', {'products': products, 'new_products':new_products, 'categories': categories, 'current_page': current_page, 'numPages': numPages})
 
 @login_required
 def wish_list_of_loggued_user(request):
@@ -397,7 +405,7 @@ def create_wish_list(request):
             wishList.name = form.cleaned_data['name']
             wishList.owner = person
             wishList.save()
-            messages.success(request, 'Wish list has been created succesfuly!')
+            messages.success(request, 'Wish list has been created succesfully!')
             return redirect('/myWishLists')
     else:
         form = WishListForm()
@@ -421,7 +429,7 @@ def delete_wish_list(request, wish_list_id):
     wishList = WishList.objects.get(id = wish_list_id)
     try:
         wishList.delete()
-        messages.success(request, 'The wish list has been deleted succesfuly!')
+        messages.success(request, 'The wish list has been deleted succesfully!')
         
     except WishList.DoesNotExist:
         pass

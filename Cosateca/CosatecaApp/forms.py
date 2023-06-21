@@ -1,6 +1,8 @@
+from django.core import exceptions
 from django import forms
 from .models import *
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.password_validation import validate_password
 
 
 class RegistrationForm(forms.Form):
@@ -21,6 +23,16 @@ class RegistrationForm(forms.Form):
 
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError('Passwords do not match.')
+        
+    def clean_password1(self):
+        password1 = self.cleaned_data.get('password1')
+
+        try:
+            validate_password(password1)
+        except exceptions.ValidationError as e:
+            raise forms.ValidationError(str(e))
+
+        return password1
         
     def clean_postalCode(self):
         postal_code = self.cleaned_data.get('postalCode')
@@ -48,6 +60,9 @@ class RegistrationForm(forms.Form):
             
     def clean_username(self):
         username = self.cleaned_data.get('username')
+        
+        if ' ' in username:
+            raise forms.ValidationError('Username cannot contain spaces.')
         
         if User.objects.filter(username=username).exists():
             raise forms.ValidationError('Username already exists.')
@@ -202,6 +217,7 @@ class ReportForm(forms.Form):
 class FilterForm(forms.Form):
     category = forms.ChoiceField(choices=Category.choices)
     novelty = forms.BooleanField(initial='False', required=False)
+    userWhoUploadProduct = forms.ModelChoiceField(queryset=Person.objects.all())
     
 class WishListForm(forms.ModelForm):
     class Meta:
@@ -209,6 +225,12 @@ class WishListForm(forms.ModelForm):
         fields = ['name']
         labels = {'name': 'Name'}
         widgets = {'name': forms.TextInput(attrs={'class': 'form-control'})}
+        
+    def clean_name(self):
+        name = self.cleaned_data.get('name')
+        if WishList.objects.filter(name__iexact=name).exists():
+            raise forms.ValidationError('A wish list with this name already exists.')
+        return name
         
 class ProductInList(forms.Form):
     wish_list = forms.ModelChoiceField(queryset=WishList.objects.all())
@@ -220,3 +242,4 @@ class ProductInList(forms.Form):
         wishlists = WishList.objects.filter(owner__user_id=user.id)
 
         self.fields['wish_list'].choices = [(wishlist.id, wishlist.name) for wishlist in wishlists]
+        
