@@ -153,6 +153,7 @@ def edit_user_info(request):
             person.phone = form.cleaned_data['phone']
             person.user.save()
             person.save()
+            messages.success(request, 'Edited succesfully!')
             return redirect('/inicio')
     else: #Rellena con los campos ya existentes
         form = EditInfoUserForm(initial={
@@ -207,6 +208,7 @@ def edit_product_upload_by_logged_user(request, product_id):
             product.description = form.cleaned_data['description']
             product.category = form.cleaned_data['category']
             product.save()
+            messages.success(request, 'Edited succesfully!')
             return redirect('/inicio')
     else: #Rellena con los campos ya existentes
         form = ProductForm(initial={

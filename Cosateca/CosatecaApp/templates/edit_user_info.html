@@ -38,11 +38,11 @@
                             {% csrf_token %}
 
                             <h5>Do you want change info?</h5>
-                            <div>
+                           
                                 {{form | crispy}}                            
                                 <a href="/inicio" class="btn btn-warning float-left"> Back to menu</a>
                                 <input type="submit" value="Save changes" class="btn btn-success float-right">
-                            </div>
+                           
                         </form>
                     </div>
 

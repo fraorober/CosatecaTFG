@@ -12,5 +12,5 @@ admin.site.register(Rating)
 admin.site.register(Report)
 admin.site.register(WishList)
 admin.site.register(ProductsInList)
-admin.site.register(Verificaction)
+admin.site.register(Verification)
 

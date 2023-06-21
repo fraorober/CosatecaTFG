@@ -9,7 +9,7 @@ class Person(models.Model):
     address = models.CharField(max_length=40)
     postalCode = models.CharField(max_length=5)
     imageProfile = models.ImageField(null=True, blank=True)
-    phone = models.CharField(max_length=9)   #Falta validar
+    phone = models.CharField(max_length=9)   
     banned = models.BooleanField(default=False)
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='person', default='null', null=False)
     
@@ -132,7 +132,7 @@ class State(models.TextChoices):
     INPROGRESS = "IN PROGRESS"
     CLOSED = "CLOSED"
 
-class Verificaction(models.Model):
+class Verification(models.Model):
     
     userToVerify = models.ForeignKey(Person, null=False, on_delete=models.CASCADE)
     video = models.URLField(blank=False, null=False)
