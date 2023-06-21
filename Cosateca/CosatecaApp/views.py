@@ -75,8 +75,18 @@ def upload_product(request):
 def view_product_detail(request, product_id):
     reviews = Rating.objects.filter(product__id=product_id)
     product = Product.objects.get(id=product_id)
+    personLogged = Person.objects.get(user__id=request.user.id)
     person = None
     add_product = False
+    review_exits = Rating.objects.filter(product__id=product_id, user__id=personLogged.id).exists()
+    
+    paginator = Paginator(reviews, 2)
+    page = request.GET.get("page") or 1
+    reviews = paginator.get_page(page)
+    current_page=int(page) #Page on that we are situated
+    pages = range(1, reviews.paginator.num_pages + 1) # +1 because in range the last number are not included
+    numPages = len(pages)
+
     
     if request.user.is_authenticated:
         person = Person.objects.get(user__id=request.user.id)
@@ -84,17 +94,19 @@ def view_product_detail(request, product_id):
         if product not in products_of_logged_user:
             add_product = True
         
-    return render(request, 'product_detail.html', {'product':product, 'reviews': reviews, 'add_product': add_product})
+    return render(request, 'product_detail.html', {'product':product, 'reviews': reviews, 'add_product': add_product, 'review_exits': review_exits, 'pages': pages, 'current_page': current_page, 'numPages': numPages})
 
 @login_required
 def submit_review(request, product_id):
     product = Product.objects.get(id=product_id)
     person = Person.objects.get(user=request.user)
+
     if request.method == 'POST':
         form = ReviewForm(request.POST)
         if form.is_valid():
             form.save(product=product, user=person)
-            return redirect('/inicio') 
+            messages.success(request, 'The review has been created succesfully!')
+            return redirect('productDetails', product_id=product_id)
     else:
         form = ReviewForm()
     return render(request, 'product_detail.html', {'form': form})
@@ -107,6 +119,7 @@ def delete_review(request, review_id):
         if rating.user.user == request.user:
             rating.delete()
             messages.success(request, 'Rating has been deleted succesfully!')
+            
     except Rating.DoesNotExist:
         pass
     
@@ -123,6 +136,7 @@ def edit_review(request, review_id):
             rating.subject = form.cleaned_data['subject']
             rating.review = form.cleaned_data['review']
             rating.save()
+            messages.success(request, 'Rating has been edited succesfully!')
             return redirect('/inicio')
     else: #Rellena con los campos ya existentes
         form = ReviewForm(initial={

@@ -48,15 +48,7 @@
     
     <div class="container">
 
-            <br>
-            {% if messages %}
-                                
-                {% for mensaje in messages %}
-                    <div class="correcto"> {{ mensaje }}</div>
-                {% endfor %}
-            
-            {% endif %}
-            <br>
+        
 
         <div class="row">
 
@@ -137,6 +129,17 @@
 
                 {% csrf_token %}
                 <h5>Write your review</h5>
+                {% if messages %}
+                                
+                    {% for mensaje in messages %}
+                        {% if mensaje.error%}
+                            <div class="error"> {{ mensaje }}</div>
+                        {%else%}
+                            <div class="correcto"> {{ mensaje }}</div>
+                        {%endif%}
+                    {% endfor %}
+                
+                {% endif %}
                 <div>
                     <!-- Starts -->
                     <label> How do you rate this product?</label>
@@ -162,10 +165,15 @@
                     Review:
                     <textarea name="review" rows="4" class="form-control"></textarea>
                     <br>
-                    {% if user.is_authenticated %}
-                        <input type="submit" value="Submit Review" class="btn btn-primary" onclick="validateForm()">
+                    {% if review_exits %}
+                        <p> You have already valorated this product, you can not valorate again. You can edit your review.</p>
                     {% else %}
-                        <p> You must be logged in to push a review.<span> <a href="{% url 'login' %}">Login now</a> </span> </p>               
+
+                        {% if user.is_authenticated %}
+                            <input type="submit" value="Submit Review" class="btn btn-primary" onclick="validateForm()">
+                        {% else %}
+                            <p> You must be logged in to push a review.<span> <a href="{% url 'login' %}">Login now</a> </span> </p>               
+                        {% endif %}
                     {% endif %}
                 </div>
             </form>
@@ -232,6 +240,9 @@
                     </div>
                 {% endfor %}
                     <br>
+                <div class="pagination-wrapper" >
+                    {% include "pagination.html" %}
+                </div>
             {% else %}
                 <h5> Not exist reviews for this product yet.</h5>
             {% endif %}
