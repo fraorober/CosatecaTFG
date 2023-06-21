@@ -135,6 +135,28 @@ class ProductForm(forms.Form):
         product.save()
         return product
 
+class EditProductForm(forms.Form):
+    name = forms.CharField(max_length=60)
+    image = forms.ImageField(required=False)
+    description = forms.CharField(max_length=500, widget=forms.Textarea)
+    category = forms.ChoiceField(choices=Category.choices)    
+    
+    def save(self, user):
+        cleaned_data = self.cleaned_data
+        person=Person.objects.filter(user=user).get()
+        product = Product(
+            name=cleaned_data['name'],
+            description=cleaned_data['description'],
+            category=cleaned_data['category'],
+            userWhoUploadProduct=person
+        )
+
+        if cleaned_data['image']:
+            product.image = cleaned_data['image']
+
+        product.save()
+        return product
+
 class ReviewForm(forms.Form):
     subject = forms.CharField(max_length=100, error_messages={'required': 'This field is required.'}, required=True)
     review = forms.CharField(max_length=1000, widget=forms.Textarea, required=False)
@@ -225,12 +247,7 @@ class WishListForm(forms.ModelForm):
         fields = ['name']
         labels = {'name': 'Name'}
         widgets = {'name': forms.TextInput(attrs={'class': 'form-control'})}
-        
-    def clean_name(self):
-        name = self.cleaned_data.get('name')
-        if WishList.objects.filter(name__iexact=name).exists():
-            raise forms.ValidationError('A wish list with this name already exists.')
-        return name
+
         
 class ProductInList(forms.Form):
     wish_list = forms.ModelChoiceField(queryset=WishList.objects.all())

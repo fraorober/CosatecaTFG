@@ -116,7 +116,7 @@
                                             {% endif %}
                                         </div>
                                         <h2 class="card-title">{{product.name}}</h2>  
-                                        <h2 class="text">{{product.description}}</h2> 
+                                        <p class="text">{{product.description}}</p> 
                                         <div class="text-center my-4"> 
                                             <a href="/product/{{product.id}}" class="btn btn-warning">Check offer</a>
                                         </div> 
@@ -128,6 +128,9 @@
                     <div class="pagination-wrapper" >
                         {% include "pagination.html" %}
                     </div>
+
+                {% else %}
+                    <h5>This user has not products yet!</h5> 
                 {% endif %}
             </div>
         </div>

@@ -194,7 +194,7 @@ def delete_product_upload_of_logged_user(request, product_id):
     except Product.DoesNotExist:
         pass
     
-    return redirect('/inicio')
+    return redirect('/myProducts')
 
 @login_required
 def edit_product_upload_by_logged_user(request, product_id):
@@ -209,7 +209,7 @@ def edit_product_upload_by_logged_user(request, product_id):
             product.category = form.cleaned_data['category']
             product.save()
             messages.success(request, 'Edited succesfully!')
-            return redirect('/inicio')
+            return redirect('/myProducts')
     else: #Rellena con los campos ya existentes
         form = ProductForm(initial={
             'name': product.name,
@@ -301,7 +301,7 @@ def return_product(request, product_id):
         product.availab = True
         product.save()
         messages.success(request, 'You have successfully changed the availability of the product!')
-        return redirect('/inicio') 
+        return redirect('/myProducts') 
         
     except Product.DoesNotExist:
         pass
@@ -405,10 +405,15 @@ def create_wish_list(request):
         if form.is_valid():
             wishList = WishList()
             wishList.name = form.cleaned_data['name']
-            wishList.owner = person
-            wishList.save()
-            messages.success(request, 'Wish list has been created succesfully!')
-            return redirect('/myWishLists')
+            if WishList.objects.filter(owner=person, name=form.cleaned_data['name']).exists():
+                messages.error(request, 'You have a wish list with this name, please choose another one.')
+            else:
+                wishList = WishList()
+                wishList.name = form.cleaned_data['name']
+                wishList.owner = person
+                wishList.save()
+                messages.success(request, '¡La lista de deseos se ha creado correctamente!')
+                return redirect('/myWishLists')
     else:
         form = WishListForm()
     return render(request, 'create_wish_list.html', {'form': form})

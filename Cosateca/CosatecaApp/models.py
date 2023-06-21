@@ -30,6 +30,9 @@ class Category(models.TextChoices):
     TABLETS = "TABLETS"
     MOBILE_PHONE = "MOBILE PHONE"
     ART = "ART"
+    PHOTOGRAPHY = "PHOTOGRAPHY"
+    KITCHEN = "KITCHEN"
+    INSTRUMENTS = "INSTRUMENTS"
 
 class Product(models.Model):
     
@@ -93,7 +96,7 @@ class Rating(models.Model):
     
 class Reason(models.TextChoices):
     
-    FRAUDULENT_BEHAVIOR  = "FRAUDULENT EHAVIOR"
+    FRAUDULENT_BEHAVIOR  = "FRAUDULENT BEHAVIOR"
     DAMAGE_OR_LOSS_OBJECTS = "DAMAGE OR LOSS OBJECTS"
     ILLEGAL_ACTIVITIES = "ILLEGAL ACTIVITIES"
 
@@ -101,11 +104,11 @@ class Reason(models.TextChoices):
 class Report(models.Model):
     
     date = models.DateField(null=False, blank=False, auto_now_add=True)
-    observations = models.CharField(max_length=300)
+    observations = models.CharField(max_length=300, blank=True)
     reportedUser = models.ForeignKey(Person, null=False, on_delete=models.CASCADE)
     reportingUser = models.ForeignKey(Person, null=False, related_name='reportingUser', on_delete=models.CASCADE)
     reason = models.CharField(Reason, choices=Reason.choices, max_length=25)
-    capture = models.URLField(null=True, blank=True)
+    capture = models.ImageField(null=True, blank=True)
     
     def __str__(self):
         return 'User ' + self.reportedUser.user.username + ' has been reported by ' + self.reportingUser.user.username
