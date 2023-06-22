@@ -100,6 +100,11 @@ class Reason(models.TextChoices):
     DAMAGE_OR_LOSS_OBJECTS = "DAMAGE OR LOSS OBJECTS"
     ILLEGAL_ACTIVITIES = "ILLEGAL ACTIVITIES"
 
+class Status(models.TextChoices):
+    
+    ACCEPTED = "ACCEPTED"
+    IN_REVISION = "IN REVISION"
+    REJECTED = "REJECTED"
     
 class Report(models.Model):
     
@@ -108,7 +113,9 @@ class Report(models.Model):
     reportedUser = models.ForeignKey(Person, null=False, on_delete=models.CASCADE)
     reportingUser = models.ForeignKey(Person, null=False, related_name='reportingUser', on_delete=models.CASCADE)
     reason = models.CharField(Reason, choices=Reason.choices, max_length=25)
-    capture = models.ImageField(null=True, blank=True)
+    capture = models.ImageField(upload_to="reports", null=True, blank=True)
+    status = models.CharField(default=Status.IN_REVISION, choices=Status.choices, max_length=11)
+
     
     def __str__(self):
         return 'User ' + self.reportedUser.user.username + ' has been reported by ' + self.reportingUser.user.username
@@ -128,7 +135,7 @@ class ProductsInList(models.Model):
 
     def __str__(self):
         return 'Product ' + self.product.name + ' added to list ' + "'" + self.wishList.name + "'"
-
+    
 class State(models.TextChoices):
     
     OPEN = "OPEN"

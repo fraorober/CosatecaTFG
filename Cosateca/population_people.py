@@ -178,11 +178,11 @@ BEGIN
     
     
     
-    INSERT INTO cosatecaapp_report(date, observations, reason, capture, reportedUser_id, reportingUser_id)
-    VALUES ('2023-06-19', 'Me ha insultado.', 'FRAUDULENT BEHAVIOR', '', (SELECT cosatecaapp_person.id FROM cosatecaapp_person JOIN auth_user ON cosatecaapp_person.user_id = auth_user.id WHERE username = 'pepe2002'), (SELECT cosatecaapp_person.id FROM cosatecaapp_person JOIN auth_user ON cosatecaapp_person.user_id = auth_user.id WHERE username = 'nieves1996'));
+    INSERT INTO cosatecaapp_report(date, observations, reason, capture, reportedUser_id, reportingUser_id, status)
+    VALUES ('2023-06-19', 'Me ha insultado.', 'FRAUDULENT BEHAVIOR', '/reports/prueba1.jpg', (SELECT cosatecaapp_person.id FROM cosatecaapp_person JOIN auth_user ON cosatecaapp_person.user_id = auth_user.id WHERE username = 'pepe2002'), (SELECT cosatecaapp_person.id FROM cosatecaapp_person JOIN auth_user ON cosatecaapp_person.user_id = auth_user.id WHERE username = 'nieves1996'), 'IN REVISION');
 
-    INSERT INTO cosatecaapp_report(date, observations, reason, capture, reportedUser_id, reportingUser_id)
-    VALUES ('2023-06-19', 'Ha dejado un comentario insultando.', 'FRAUDULENT BEHAVIOR', '', (SELECT cosatecaapp_person.id FROM cosatecaapp_person JOIN auth_user ON cosatecaapp_person.user_id = auth_user.id WHERE username = 'jesusu'), (SELECT cosatecaapp_person.id FROM cosatecaapp_person JOIN auth_user ON cosatecaapp_person.user_id = auth_user.id WHERE username = 'pepe2002')); 
+    INSERT INTO cosatecaapp_report(date, observations, reason, capture, reportedUser_id, reportingUser_id, status)
+    VALUES ('2023-06-19', 'Ha dejado un comentario insultando.', 'FRAUDULENT BEHAVIOR', '', (SELECT cosatecaapp_person.id FROM cosatecaapp_person JOIN auth_user ON cosatecaapp_person.user_id = auth_user.id WHERE username = 'jesusu'), (SELECT cosatecaapp_person.id FROM cosatecaapp_person JOIN auth_user ON cosatecaapp_person.user_id = auth_user.id WHERE username = 'pepe2002'), 'IN REVISION'); 
     
     COMMIT;
 END;

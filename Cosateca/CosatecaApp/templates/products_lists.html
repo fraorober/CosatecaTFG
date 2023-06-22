@@ -28,7 +28,7 @@
                 
             {% endif %}
 
-            <div class="col-md-10">
+            <div class="col-md-12">
                 <a href="/create/product" class="btn btn-success">CREATE PRODUCT</a>
                 <br>
             
@@ -53,7 +53,13 @@
                                     <td><a href="/product/{{product.id}}">{{product.name}}</a></td>
                                     <td>{{product.publicationDate}}</td>
                                     <td>{{product.category}}</td>
-                                    <td><a href="/delete/product/{{product.id}}" class="btn btn-danger">DELETE</a><a href="/edit/product/{{product.id}}" class="btn btn-success">EDIT</a></td>
+                                    <td>
+                                        <div class="btn-group">
+                                            <a href="/delete/product/{{product.id}}" class="btn btn-danger">DELETE</a>
+                                            &nbsp;&nbsp;&nbsp;
+                                            <a href="/edit/product/{{product.id}}" class="btn btn-success">EDIT</a>
+                                        </div>
+                                    </td>
 
                                 </tr>
                                 </tbody>

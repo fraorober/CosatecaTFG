@@ -223,7 +223,7 @@ class EditInfoUserForm(forms.Form):
 class ReportForm(forms.Form):
     observations = forms.CharField(label='Observations', max_length=300)
     reason = forms.ChoiceField(label='Reason', choices=Reason.choices)
-    capture = forms.URLField(label='Capture', required=True)
+    capture = forms.ImageField(label='Capture', required=True)
     
     def save(self, reportingUser, reportedUser):
         report = Report(
@@ -231,7 +231,7 @@ class ReportForm(forms.Form):
             reportedUser = reportedUser,
             reportingUser = reportingUser,
             reason = self.cleaned_data['reason'],
-            capture=self.cleaned_data['capture']
+            capture = self.cleaned_data['capture']
         )
         report.save()
         return report

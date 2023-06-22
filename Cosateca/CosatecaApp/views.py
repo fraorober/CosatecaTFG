@@ -261,7 +261,7 @@ def report_user(request, username):
     reportingUser = Person.objects.get(user__id=request.user.id)
     reportedUser = Person.objects.get(user__username=username)
     if request.method == 'POST':
-        form = ReportForm(request.POST)
+        form = ReportForm(request.POST, request.FILES)
         if form.is_valid():
             form.save(reportingUser=reportingUser, reportedUser=reportedUser)
             return redirect('/inicio') 
@@ -670,3 +670,60 @@ def delete_product(request, product_id):
         pass
     
     return redirect('/products')
+
+@login_required
+def list_reports(request):
+    reports = Report.objects.all()
+    print(reports)
+    
+    paginator = Paginator(reports, 4)
+    page = request.GET.get("page") or 1
+    reports = paginator.get_page(page)
+    current_page=int(page) #Page on that we are situated
+    pages = range(1, reports.paginator.num_pages + 1) # +1 because in range the last number are not included
+    numPages = len(pages)
+    
+    return render(request, 'report_list.html', {'reports': reports, 'pages':pages, 'current_page': current_page, 'numPages': numPages})
+
+@login_required
+def accept_report(request, userReported_id, userReporting_id, report_id):
+    report = Report.objects.get(reportedUser=userReported_id, reportingUser=userReporting_id, id=report_id)
+    try:
+        report.status = Status.ACCEPTED
+        report.save()
+        messages.success(request, 'The report has been accepted successfully!')
+        
+    except Report.DoesNotExist:
+        pass
+    
+    return redirect('/reports')
+
+@login_required
+def reject_report(request, userReported_id, userReporting_id, report_id):
+    report = Report.objects.get(reportedUser=userReported_id, reportingUser=userReporting_id, id = report_id)
+    try:
+        report.status = Status.REJECTED
+        report.save()
+        messages.success(request, 'The report has been rejected successfully!')
+        
+    except Report.DoesNotExist:
+        pass
+    
+    return redirect('/reports')
+
+@login_required
+def delete_report(request, userReported_id, userReporting_id, report_id):
+    try:
+        report = Report.objects.get(reportedUser=userReported_id, reportingUser=userReporting_id, id=report_id)
+        report.delete()
+        messages.success(request, 'The report has been deleted successfully!')
+        
+    except Report.DoesNotExist:
+        pass
+    
+    return redirect('/reports')
+
+@login_required
+def view_report(request, userReported_id, userReporting_id, report_id):
+    report = Report.objects.get(reportedUser=userReported_id, reportingUser=userReporting_id, id=report_id)
+    return render(request, 'report_detail.html', {'report': report})

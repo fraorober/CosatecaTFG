@@ -59,6 +59,13 @@ urlpatterns = [
     path('edit/product/<int:product_id>', views.edit_product_admin, name="edit_product"),
     path('delete/product/<int:product_id>', views.delete_product, name="delete_product"),
     path('unbanned/<int:user_id>', views.unban_user, name="unbanned_user"),
+    path('reports', views.list_reports, name="list_reports"),
+    path('report/accept/<int:userReported_id>/<int:userReporting_id>/<int:report_id>', views.accept_report, name="accept_report"),
+    path('report/reject/<int:userReported_id>/<int:userReporting_id>/<int:report_id>', views.reject_report, name="reject_report"),
+    path('report/delete/<int:userReported_id>/<int:userReporting_id>/<int:report_id>', views.delete_report, name="delete_report"),
+    path('report/view/<int:userReported_id>/<int:userReporting_id>/<int:report_id>', views.view_report, name="view_report"),
+
+
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
