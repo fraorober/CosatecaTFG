@@ -21,6 +21,14 @@
             <hr>
             <h6>This is a list of products that you have reserved.</h6>  
             <br>
+
+            {% if messages %}
+                                    
+                {% for mensaje in messages %}
+                    <div class="correcto"> {{ mensaje }}</div>
+                {% endfor %}
+                
+            {% endif %}
             
             {% if products %}
 

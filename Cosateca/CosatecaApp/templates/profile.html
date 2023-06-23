@@ -7,6 +7,7 @@
         Profile
     </title>
     {%include "navbar.html" %}
+    <link href="/static/css/messages.css" rel="stylesheet">
 
     <link href="/static/css/zoomImage.css" rel="stylesheet">
     <link href="/static/css/profile.css" rel="stylesheet">
@@ -26,7 +27,13 @@
         <br>
         <h3>My Profile</h3>
         <hr>
-
+        {% if messages %}
+                                
+            {% for mensaje in messages %}
+                <div class="correcto"> {{ mensaje }}</div>
+            {% endfor %}
+        
+        {% endif %}
         <div class="row">
             <div class="col" style="text-align: center;">
                 {% if person.imageProfile %}

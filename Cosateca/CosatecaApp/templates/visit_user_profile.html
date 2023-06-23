@@ -26,7 +26,13 @@
         <br>
         <h3>Profile of {{person.user.username}}</h3>
         <hr>
-
+        {% if messages %}
+                                    
+            {% for mensaje in messages %}
+                <div class="correcto"> {{ mensaje }}</div>
+            {% endfor %}
+            
+        {% endif %}
         <div class="row">
             <div class="col">
                 <div style="text-align: center;">
@@ -85,13 +91,7 @@
         <div class="row">
             <div class="container-fluid cardProduct bg-trasparent my-4 p-3" style="position: relative;">
                 <h4>Products of this user</h4>
-                {% if messages %}
-                                    
-                    {% for mensaje in messages %}
-                        <div class="correcto"> {{ mensaje }}</div>
-                    {% endfor %}
-                    
-                {% endif %}
+
                 {% if products %}
     
                     <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-4 g-3">

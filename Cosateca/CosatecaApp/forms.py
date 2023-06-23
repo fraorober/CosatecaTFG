@@ -23,7 +23,9 @@ class RegistrationForm(forms.Form):
 
         if password1 and password2 and password1 != password2:
             raise forms.ValidationError('Passwords do not match.')
-        
+
+        return self.cleaned_data        
+    
     def clean_password1(self):
         password1 = self.cleaned_data.get('password1')
 
@@ -113,33 +115,19 @@ class InicioSesion(forms.Form):
         
         return password
     
-class ProductForm(forms.Form):
-    name = forms.CharField(max_length=60)
-    image = forms.ImageField(required=True)
-    description = forms.CharField(max_length=500, widget=forms.Textarea)
-    category = forms.ChoiceField(choices=Category.choices)    
+class ProductForm(forms.ModelForm):
     
-    def save(self, user):
-        cleaned_data = self.cleaned_data
-        person=Person.objects.filter(user=user).get()
-        product = Product(
-            name=cleaned_data['name'],
-            description=cleaned_data['description'],
-            category=cleaned_data['category'],
-            userWhoUploadProduct=person
-        )
-
-        if cleaned_data['image']:
-            product.image = cleaned_data['image']
-
-        product.save()
-        return product
+    image = forms.ImageField(required=True)
+    class Meta:
+        model = Product
+        fields = ['name', 'image', 'description', 'category']
+        labels = {'category': 'Category' }
 
 class EditProductForm(forms.Form):
     name = forms.CharField(max_length=60)
     image = forms.ImageField(required=False)
     description = forms.CharField(max_length=500, widget=forms.Textarea)
-    category = forms.ChoiceField(choices=Category.choices)    
+    category = forms.ChoiceField(choices=Category.choices, label='Category')    
     
     def save(self, user):
         cleaned_data = self.cleaned_data
@@ -198,7 +186,7 @@ class EditInfoUserForm(forms.Form):
         
         if phone:
             if len(phone) != 9:
-                raise forms.ValidationError('Phone must be 5 digits.')
+                raise forms.ValidationError('Phone must be 9 digits.')
             
             if not phone.isdigit():
                 raise forms.ValidationError('Phone must contain only numbers.')

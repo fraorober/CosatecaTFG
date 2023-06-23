@@ -1,14 +1,18 @@
 from datetime import datetime, date, timedelta
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import *
 from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.core.paginator import Paginator
 from django.db.models import Q
 
 
 # Create your views here.
+
+def staff_check(user):
+    return user.is_staff
 
 def index(request):
     list_products = Product.objects.all()
@@ -62,11 +66,17 @@ def logout_view(request):
 
 @login_required
 def upload_product(request):
+    person = Person.objects.get(user__username=request.user)
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
         if form.is_valid():
-            user = request.user  #Usuario actualmente autenticado
-            form.save(user)
+            product = Product()
+            product.name = form.cleaned_data['name']
+            product.image = form.cleaned_data['image']
+            product.description = form.cleaned_data['description']
+            product.category = form.cleaned_data['category']
+            product.userWhoUploadProduct = person
+            product.save()
             return redirect('/inicio') 
     else:
         form = ProductForm()
@@ -75,10 +85,13 @@ def upload_product(request):
 def view_product_detail(request, product_id):
     reviews = Rating.objects.filter(product__id=product_id)
     product = Product.objects.get(id=product_id)
-    personLogged = Person.objects.get(user__id=request.user.id)
+    review_exits=False
+    if request.user.is_authenticated:
+        personLogged = Person.objects.get(user__id=request.user.id)
+        review_exits = Rating.objects.filter(product__id=product_id, user__id=personLogged.id).exists()
+
     person = None
     add_product = False
-    review_exits = Rating.objects.filter(product__id=product_id, user__id=personLogged.id).exists()
     
     paginator = Paginator(reviews, 2)
     page = request.GET.get("page") or 1
@@ -119,7 +132,8 @@ def delete_review(request, review_id):
         if rating.user.user == request.user:
             rating.delete()
             messages.success(request, 'Rating has been deleted succesfully!')
-            
+            return redirect('productDetails', product_id=rating.product.id)
+
     except Rating.DoesNotExist:
         pass
     
@@ -137,7 +151,7 @@ def edit_review(request, review_id):
             rating.review = form.cleaned_data['review']
             rating.save()
             messages.success(request, 'Rating has been edited succesfully!')
-            return redirect('/inicio')
+            return redirect('productDetails', product_id=rating.product.id)
     else: #Rellena con los campos ya existentes
         form = ReviewForm(initial={
             'rating': rating.rating,
@@ -168,7 +182,7 @@ def edit_user_info(request):
             person.user.save()
             person.save()
             messages.success(request, 'Edited succesfully!')
-            return redirect('/inicio')
+            return redirect('profile')
     else: #Rellena con los campos ya existentes
         form = EditInfoUserForm(initial={
             'first_name': person.user.first_name,
@@ -263,8 +277,16 @@ def report_user(request, username):
     if request.method == 'POST':
         form = ReportForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save(reportingUser=reportingUser, reportedUser=reportedUser)
-            return redirect('/inicio') 
+            report = Report()
+            report.observations = form.cleaned_data['observations']
+            report.reason = form.cleaned_data['reason']
+            report.capture = form.cleaned_data['capture']
+            report.reportedUser = reportedUser
+            report.reportingUser = reportingUser
+            report.status = Status.IN_REVISION
+            report.save()
+            messages.success(request, 'User has been reported succesfully!!')
+            return redirect('visitUserProfile', username)
     else:
         form = ReportForm()
     return render(request, 'report.html', {'form': form})
@@ -280,7 +302,7 @@ def reserve_object(request, product_id):
         product.availab = False
         product.save()
         messages.success(request, 'You have reserved this product succesfully!')
-        return redirect('/inicio') 
+        return redirect('/myRentals') 
         
     except Product.DoesNotExist:
         pass
@@ -340,14 +362,14 @@ def catalogue(request):
         if querysetCatg and queryset and querysetNov:
             products = Product.objects.filter(
                 Q(category=querysetCatg) &
-                (Q(name=queryset) | Q(description=queryset)) &
+                (Q(name__icontains=queryset) | Q(description__icontains=queryset)) &
                 Q(publicationDate__gte=seven_days_ago)
             ).distinct()
 
         elif querysetCatg and queryset:
             products = Product.objects.filter(
                 Q(category=querysetCatg) &
-                (Q(name=queryset) | Q(description=queryset))
+                (Q(name__icontains=queryset) | Q(description__icontains=queryset))
             ).distinct()
 
         elif querysetCatg and querysetNov:
@@ -358,7 +380,7 @@ def catalogue(request):
 
         elif queryset and querysetNov:
             products = Product.objects.filter(
-                (Q(name=queryset) | Q(description=queryset)) &
+                (Q(name__icontains=queryset) | Q(description__icontains=queryset)) &
                 Q(publicationDate__gte=seven_days_ago)
             ).distinct()
 
@@ -369,7 +391,7 @@ def catalogue(request):
 
         elif queryset:
             products = Product.objects.filter(
-                Q(name=queryset) | Q(description=queryset)
+                Q(name__icontains = queryset) | Q(description__icontains=queryset)
             ).distinct()
 
         elif querysetNov:
@@ -394,7 +416,7 @@ def catalogue(request):
     except Product.DoesNotExist:
         pass
     
-    return render(request, 'catalogue.html', {'products': products, 'new_products':new_products, 'categories': categories, 'current_page': current_page, 'numPages': numPages})
+    return render(request, 'catalogue.html', {'products': products, 'new_products':new_products, 'categories': categories, 'pages': pages, 'current_page': current_page, 'numPages': numPages})
 
 @login_required
 def wish_list_of_loggued_user(request):
@@ -447,8 +469,8 @@ def view_wish_list(request, wish_list_id):
 
 @login_required
 def delete_wish_list(request, wish_list_id):
-    wishList = WishList.objects.get(id = wish_list_id)
     try:
+        wishList = WishList.objects.get(id = wish_list_id)
         wishList.delete()
         messages.success(request, 'The wish list has been deleted succesfully!')
         
@@ -489,12 +511,12 @@ def add_product_wish_list(request, product_id):
 
 @login_required
 def delete_product_of_wish_list(request, wish_list_id, product_id):
-    product_in_list = ProductsInList.objects.get(wishList__id = wish_list_id, product__id=product_id)
     try:
+        product_in_list = ProductsInList.objects.get(wishList__id = wish_list_id, product__id=product_id)
         product_in_list.delete()
         messages.success(request, 'The product has been successfully delisted!')
         
-    except WishList.DoesNotExist:
+    except ProductsInList.DoesNotExist:
         pass
     
     return redirect('view_wish_list', wish_list_id=wish_list_id)
@@ -502,6 +524,7 @@ def delete_product_of_wish_list(request, wish_list_id, product_id):
 def help(request):
     return render(request, 'help.html')
 
+@user_passes_test(staff_check)
 @login_required
 def list_users(request):
     person = Person.objects.get(user=request.user)
@@ -517,12 +540,13 @@ def list_users(request):
     pages = range(1, people.paginator.num_pages + 1) # +1 because in range the last number are not included
     numPages = len(pages)
     
-    return render(request, 'users_list.html', {'people': people, 'current_page': current_page, 'numPages': numPages})
+    return render(request, 'users_list.html', {'people': people, 'pages': pages, 'current_page': current_page, 'numPages': numPages})
 
+@user_passes_test(staff_check)
 @login_required
 def delete_user(request, user_id):
-    person = Person.objects.get(user__id=user_id)
     try:
+        person = Person.objects.get(user__id=user_id)
         person.delete()
         messages.success(request, 'The user has been deleted successfully!')
         
@@ -531,10 +555,11 @@ def delete_user(request, user_id):
     
     return redirect('users')
 
+@user_passes_test(staff_check)
 @login_required
 def ban_user(request, user_id):
-    person = Person.objects.get(user__id=user_id)
     try:
+        person = Person.objects.get(user__id=user_id)
         person.user.is_active = False
         person.user.save()
         person.save()
@@ -545,20 +570,23 @@ def ban_user(request, user_id):
     
     return redirect('users')
 
+@user_passes_test(staff_check)
 @login_required
 def unban_user(request, user_id):
-    person = Person.objects.get(user__id=user_id)
+
     try:
+        person = Person.objects.get(user__id=user_id)
         person.user.is_active = True
         person.user.save()
         person.save()
         messages.success(request, 'The user has been unbanned successfully!')
         
     except Person.DoesNotExist:
-        pass
+        pass 
     
     return redirect('users')
 
+@user_passes_test(staff_check)
 @login_required
 def edit_user(request, user_id):
     person = Person.objects.get(user__id=user_id)
@@ -588,6 +616,7 @@ def edit_user(request, user_id):
 
     return render(request, 'edit_user_admin.html', {'form': form, 'person': person})
 
+@user_passes_test(staff_check)
 @login_required
 def admin_create_user(request):
     if request.method == 'POST':
@@ -595,7 +624,7 @@ def admin_create_user(request):
         
         if form.is_valid():            
             form.save()
-            messages.success(request, 'The user has been updated successfully!')
+            messages.success(request, 'The user has been created successfully!')
 
             return redirect('users')            
         
@@ -604,6 +633,7 @@ def admin_create_user(request):
         
     return render(request, 'create_user_admin.html', {'form': form})
 
+@user_passes_test(staff_check)
 @login_required
 def list_products(request):
     products = Product.objects.all()
@@ -617,23 +647,29 @@ def list_products(request):
     
     return render(request, 'products_lists.html', {'products': products, 'current_page': current_page, 'numPages': numPages})
 
+@user_passes_test(staff_check)
 @login_required
 def admin_create_product(request):
+    person = Person.objects.get(user__username=request.user)
     if request.method == 'POST':
         form = ProductForm(request.POST, request.FILES)
-        
         if form.is_valid():
-            user = request.user  #Usuario actualmente autenticado            
-            form.save(user)
+            product = Product()
+            product.name = form.cleaned_data['name']
+            product.image = form.cleaned_data['image']
+            product.description = form.cleaned_data['description']
+            product.category = form.cleaned_data['category']
+            product.userWhoUploadProduct = person
+            product.save()
             messages.success(request, 'The product has been updated successfully!')
-
-            return redirect('/products')            
+            return redirect('/products')           
         
     else:
         form = ProductForm()
         
     return render(request, 'create_product_admin.html', {'form': form})
 
+@user_passes_test(staff_check)
 @login_required
 def edit_product_admin(request, product_id):
     product = Product.objects.get(id=product_id)
@@ -659,6 +695,7 @@ def edit_product_admin(request, product_id):
 
     return render(request, 'edit_product_admin.html', {'form': form, 'product': product})
 
+@user_passes_test(staff_check)
 @login_required
 def delete_product(request, product_id):
     try:
@@ -671,6 +708,7 @@ def delete_product(request, product_id):
     
     return redirect('/products')
 
+@user_passes_test(staff_check)
 @login_required
 def list_reports(request):
     reports = Report.objects.all()
@@ -685,6 +723,7 @@ def list_reports(request):
     
     return render(request, 'report_list.html', {'reports': reports, 'pages':pages, 'current_page': current_page, 'numPages': numPages})
 
+@user_passes_test(staff_check)
 @login_required
 def accept_report(request, userReported_id, userReporting_id, report_id):
     report = Report.objects.get(reportedUser=userReported_id, reportingUser=userReporting_id, id=report_id)
@@ -698,6 +737,7 @@ def accept_report(request, userReported_id, userReporting_id, report_id):
     
     return redirect('/reports')
 
+@user_passes_test(staff_check)
 @login_required
 def reject_report(request, userReported_id, userReporting_id, report_id):
     report = Report.objects.get(reportedUser=userReported_id, reportingUser=userReporting_id, id = report_id)
@@ -711,6 +751,7 @@ def reject_report(request, userReported_id, userReporting_id, report_id):
     
     return redirect('/reports')
 
+@user_passes_test(staff_check)
 @login_required
 def delete_report(request, userReported_id, userReporting_id, report_id):
     try:
@@ -723,6 +764,7 @@ def delete_report(request, userReported_id, userReporting_id, report_id):
     
     return redirect('/reports')
 
+@user_passes_test(staff_check)
 @login_required
 def view_report(request, userReported_id, userReporting_id, report_id):
     report = Report.objects.get(reportedUser=userReported_id, reportingUser=userReporting_id, id=report_id)
