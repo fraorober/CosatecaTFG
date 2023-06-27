@@ -18,6 +18,7 @@
 
             <h3>List of users</h3>
             <hr>
+            <h6>In this section you can find all users.</h6>  
             <br>
 
             {% if messages %}
@@ -28,59 +29,62 @@
                 
             {% endif %}
 
-            <div class="col-md-12">
+            <div class="col">
                 <a href="/create/user" class="btn btn-success">CREATE USER</a>
                 <br>
             
                 {% if people %}
+
+                    <div class="table-responsive">
                     
-                    <table class="table table-dark">
-                        <br>
-                            <thead class="thead">
-                                <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Username</th>
-                                    <th scope="col">Joined</th>
-                                    <th scope="col">Bannend</th>
-                                    <th scope="col">Actions</th>
+                        <table class="table table-dark">
+                            <br>
+                                <thead class="thead">
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Username</th>
+                                        <th scope="col">Joined</th>
+                                        <th scope="col">Bannend</th>
+                                        <th scope="col">Actions</th>
 
 
-                                </tr>
-                            </thead>
-                            {% for person in people %}
+                                    </tr>
+                                </thead>
+                                {% for person in people %}
 
-                                <tbody>
-                                <tr>
+                                    <tbody>
+                                    <tr>
 
-                                    <td>{{person.user.first_name}}</td>
-                                    <td><a href="/profile/{{person.user.username}}" class="btn btn-primary">{{person.user.username}}</a></td>
-                                    <td>{{person.user.date_joined}}</td>
-                                    <td>
-                                        {% if person.user.is_active %}
-                                            No
-                                        {% else %}
-                                            Yes
-                                        {%endif%}
-                                    </td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <a href="/delete/{{person.user.id}}" class="btn btn-danger">DELETE</a>
-                                            &nbsp;&nbsp;&nbsp;
-                                            <a href="/edit/{{person.user.id}}" class="btn btn-success">EDIT</a>
-                                            &nbsp;&nbsp;&nbsp;
+                                        <td>{{person.user.first_name}}</td>
+                                        <td><a href="/profile/{{person.user.username}}" class="btn btn-primary">{{person.user.username}}</a></td>
+                                        <td>{{person.user.date_joined}}</td>
+                                        <td>
                                             {% if person.user.is_active %}
-                                                <a href="/banned/{{person.user.id}}" class="btn btn-warning">BAN</a>
+                                                No
                                             {% else %}
-                                                <a href="/unbanned/{{person.user.id}}" class="btn btn-warning">UNBAN</a>
+                                                Yes
                                             {%endif%}
-                                        </div>
-                                    </td>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="/delete/{{person.user.id}}" class="btn btn-danger">DELETE</a>
+                                                &nbsp;&nbsp;&nbsp;
+                                                <a href="/edit/{{person.user.id}}" class="btn btn-success">EDIT</a>
+                                                &nbsp;&nbsp;&nbsp;
+                                                {% if person.user.is_active %}
+                                                    <a href="/banned/{{person.user.id}}" class="btn btn-warning">BAN</a>
+                                                {% else %}
+                                                    <a href="/unbanned/{{person.user.id}}" class="btn btn-warning">UNBAN</a>
+                                                {%endif%}
+                                            </div>
+                                        </td>
 
-                                </tr>
-                                </tbody>
-                            {% endfor %}
+                                    </tr>
+                                    </tbody>
+                                {% endfor %}
 
-                    </table>
+                        </table>
+                    </div>
 
                     <div class="pagination-wrapper" >
                         {% include "pagination.html" %}

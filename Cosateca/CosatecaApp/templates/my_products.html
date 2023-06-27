@@ -24,7 +24,12 @@
             {% if messages %}
                                 
                 {% for mensaje in messages %}
-                    <div class="correcto"> {{ mensaje }}</div>
+                    {% if mensaje.correcto %}
+                        <div class="correcto"> {{ mensaje }}</div>
+                    {% else %}
+                        <div class="error"> {{ mensaje }}</div>
+
+                    {% endif %}
                 {% endfor %}
             
             {% endif %}
@@ -68,9 +73,15 @@
                                             <a href="/product/{{product.id}}" class="btn btn-warning">Check offer</a>
                                         </div>
                                         <hr>
-                                        <div>
-                                            <a href="/product/{{product.id}}/returned" class="btn btn-primary">Returned Product</a>
-                                        </div>
+                                        {% if product.availab %}
+                                            <div> 
+                                                <p>This product has already Returned</p>
+                                            </div>
+                                        {% else %}
+                                            <div>
+                                                <a href="/product/{{product.id}}/returned" class="btn btn-primary">Returned Product</a>
+                                            </div>
+                                        {% endif %}
                                 
                                     </div> 
                                 </div> 

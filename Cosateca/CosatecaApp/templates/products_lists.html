@@ -18,6 +18,7 @@
 
             <h3>List of products</h3>
             <hr>
+            <h6>In this section you can find all products.</h6>  
             <br>
 
             {% if messages %}
@@ -33,39 +34,43 @@
                 <br>
             
                 {% if products %}
+
+                    <div class="table-responsive">
                     
-                    <table class="table table-dark">
-                        <br>
-                            <thead class="thead">
-                                <tr>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Added</th>
-                                    <th scope="col">Category</th>
-                                    <th scope="col">Actions</th>
+                        <table class="table table-dark">
+                            <br>
+                                <thead class="thead">
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Added</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Actions</th>
 
-                                </tr>
-                            </thead>
-                            {% for product in products %}
+                                    </tr>
+                                </thead>
+                                {% for product in products %}
 
-                                <tbody>
-                                <tr>
+                                    <tbody>
+                                    <tr>
 
-                                    <td><a href="/product/{{product.id}}">{{product.name}}</a></td>
-                                    <td>{{product.publicationDate}}</td>
-                                    <td>{{product.category}}</td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <a href="/delete/product/{{product.id}}" class="btn btn-danger">DELETE</a>
-                                            &nbsp;&nbsp;&nbsp;
-                                            <a href="/edit/product/{{product.id}}" class="btn btn-success">EDIT</a>
-                                        </div>
-                                    </td>
+                                        <td><a href="/product/{{product.id}}">{{product.name}}</a></td>
+                                        <td>{{product.publicationDate}}</td>
+                                        <td>{{product.category}}</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="/delete/product/{{product.id}}" class="btn btn-danger">DELETE</a>
+                                                &nbsp;&nbsp;&nbsp;
+                                                <a href="/edit/product/{{product.id}}" class="btn btn-success">EDIT</a>
+                                            </div>
+                                        </td>
 
-                                </tr>
-                                </tbody>
-                            {% endfor %}
+                                    </tr>
+                                    </tbody>
+                                {% endfor %}
 
-                    </table>
+                        </table>
+
+                    </div>
 
                     <div class="pagination-wrapper" >
                         {% include "pagination.html" %}

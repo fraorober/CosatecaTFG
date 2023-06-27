@@ -26,7 +26,11 @@
             {% if messages %}
                                 
                 {% for mensaje in messages %}
-                    <div class="correcto"> {{ mensaje }}</div>
+                    {% if mensaje.correcto %}
+                        <div class="correcto"> {{ mensaje }}</div>
+                    {% else %}
+                        <div class="error"> {{ mensaje }}</div>
+                    {% endif %}
                 {% endfor %}
                 
             {% endif %}

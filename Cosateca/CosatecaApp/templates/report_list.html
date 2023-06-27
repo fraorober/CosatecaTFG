@@ -18,6 +18,7 @@
 
             <h3>List of reports</h3>
             <hr>
+            <h6>In this section you can find all reports.</h6>  
             <br>
 
             {% if messages %}
@@ -28,54 +29,54 @@
                 
             {% endif %}
 
-            <div class="col-">
+            <div class="col">
                 <br>
             
                 {% if reports %}
-                    
-                    <table class="table table-dark">
-                        <br>
-                            <thead class="thead">
-                                <tr>
-                                    <th scope="col">Reporting User</th>
-                                    <th scope="col">Reported User</th>
-                                    <th scope="col">Date</th>
-                                    <th scope="col">Reason</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Actions</th>
+                    <div class="table-responsive">
+                        <table class="table table-dark">
+                            <br>
+                                <thead class="thead">
+                                    <tr>
+                                        <th scope="col">Reporting User</th>
+                                        <th scope="col">Reported User</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Reason</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Actions</th>
 
-                                </tr>
-                            </thead>
-                            {% for report in reports %}
-
+                                    </tr>
+                                </thead>
                                 <tbody>
-                                <tr>
 
-                                    <td><a href="/profile/{{report.reportingUser.user.username}}">{{report.reportingUser.user.username}}</a></td>
-                                    <td><a href="/profile/{{report.reportedUser.user.username}}">{{report.reportedUser.user.username}}</a></td>
-                                    <td>{{report.date}}</td>
-                                    <td>{{report.reason}}</td>
-                                    <td>{{report.status}}</td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <a href="/report/accept/{{report.reportedUser.id}}/{{report.reportingUser.id}}/{{report.id}}" class="btn btn-success">ACCEPT</a>
-                                            &nbsp;&nbsp;&nbsp;
-                                            <a href="/report/reject/{{report.reportedUser.id}}/{{report.reportingUser.id}}/{{report.id}}" class="btn btn-warning">REJECT</a>
-                                            &nbsp;&nbsp;&nbsp;
-                                            <a href="/report/delete/{{report.reportedUser.id}}/{{report.reportingUser.id}}/{{report.id}}" class="btn btn-danger">DELETE</a>
-                                            &nbsp;&nbsp;&nbsp;
-                                            <a href="/report/view/{{report.reportedUser.id}}/{{report.reportingUser.id}}/{{report.id}}" class="btn btn-primary">VIEW</a>
-                                        </div>
+                                {% for report in reports %}
 
-                                    </td>
-    
-                                    </td>
+                                    <tr>
 
-                                </tr>
+                                        <td><a href="/profile/{{report.reportingUser.user.username}}">{{report.reportingUser.user.username}}</a></td>
+                                        <td><a href="/profile/{{report.reportedUser.user.username}}">{{report.reportedUser.user.username}}</a></td>
+                                        <td>{{report.date}}</td>
+                                        <td>{{report.reason}}</td>
+                                        <td>{{report.status}}</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="/report/accept/{{report.reportedUser.id}}/{{report.reportingUser.id}}/{{report.id}}" class="btn btn-success">ACCEPT</a>
+                                                &nbsp;&nbsp;&nbsp;
+                                                <a href="/report/reject/{{report.reportedUser.id}}/{{report.reportingUser.id}}/{{report.id}}" class="btn btn-warning">REJECT</a>
+                                                &nbsp;&nbsp;&nbsp;
+                                                <a href="/report/delete/{{report.reportedUser.id}}/{{report.reportingUser.id}}/{{report.id}}" class="btn btn-danger">DELETE</a>
+                                                &nbsp;&nbsp;&nbsp;
+                                                <a href="/report/view/{{report.reportedUser.id}}/{{report.reportingUser.id}}/{{report.id}}" class="btn btn-primary">VIEW</a>
+                                            </div>
+
+                                        </td></td>
+
+                                    </tr>
+                                {% endfor %}
                                 </tbody>
-                            {% endfor %}
 
-                    </table>
+                        </table>
+                    </div>
 
                     <div class="pagination-wrapper" >
                         {% include "pagination.html" %}

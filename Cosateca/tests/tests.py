@@ -10,9 +10,9 @@ from django.test import Client
 from django.test import TestCase
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-
-# Todos los warning que se muestran al ejecutar los tests es debido a la paginación. Al pasar una lista sin ordenar, 
-# cada vez que se muestre puede que lo haga de una manera diferente. Esto es lo que nos indica el warning.
+# A la hora de ejecutar los tests con el comando pytest, es importante situarse a la altura del manage.py, ya que 
+# en las pruebas unitarias se hace referencias a las rutas de imágenes y si se pone en el directorio incorrecto, es probable
+# que no capture dicha ruta.
 
 class TestView(TestCase):
     def setUp(self):
@@ -102,7 +102,7 @@ class TestView(TestCase):
     def test_upload_product(self):
         self.client.force_login(self.user)
         
-        image_path = 'media/productos/camara.jpg'
+        image_path = 'media/productos/balon.jpg'
 
         with open(image_path, 'rb') as file:
             image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
@@ -119,9 +119,14 @@ class TestView(TestCase):
     
     def test_product_detail_unlogged_user(self):
         
+        image_path = 'media/productos/balon.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+        
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -146,10 +151,15 @@ class TestView(TestCase):
     def test_product_detail_logged_user(self):
         
         self.client.force_login(self.user)
+
+        image_path = 'media/productos/balon.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
         
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -174,9 +184,14 @@ class TestView(TestCase):
     def test_submit_review(self):
         self.client.force_login(self.user)
         
+        image_path = 'media/productos/balon.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+        
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -201,9 +216,14 @@ class TestView(TestCase):
     def test_edit_review(self):
         self.client.force_login(self.user)
         
+        image_path = 'media/productos/balon.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+        
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -240,9 +260,14 @@ class TestView(TestCase):
     def test_edit_review_get_form(self):
         self.client.force_login(self.user)
         
+        image_path = 'media/productos/balon.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+        
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -274,9 +299,14 @@ class TestView(TestCase):
     def test_delete_review(self):
         self.client.force_login(self.user)
         
+        image_path = 'media/productos/balon.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+        
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -313,9 +343,14 @@ class TestView(TestCase):
     def test_delete_review_that_not_exists(self):
         self.client.force_login(self.user)
         
+        image_path = 'media/productos/balon.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+        
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -386,9 +421,14 @@ class TestView(TestCase):
         
         self.client.force_login(self.user)
         
+        image_path = 'media/productos/balon.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+        
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -413,9 +453,14 @@ class TestView(TestCase):
         
         self.client.force_login(self.user)
         
+        image_path = 'media/productos/balon.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+        
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -440,9 +485,14 @@ class TestView(TestCase):
         
         self.client.force_login(self.user)
         
+        image_path = 'media/productos/balon.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+        
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -508,8 +558,8 @@ class TestView(TestCase):
         
         self.client.force_login(self.user)
 
-        user_to_visit = User.objects.create_user(
-            username = 'testusertovisit',
+        user_to_report = User.objects.create_user(
+            username = 'testusertoreport',
             email = 'testusertovisit@example.com',
             password = 'TestPassword2001',
             first_name = 'prueba',
@@ -517,21 +567,21 @@ class TestView(TestCase):
             is_staff=False
         )
         
-        user_to_visit.save()
+        user_to_report.save()
         
-        person_to_visit = Person.objects.create(
+        person_to_report = Person.objects.create(
             
             address = 'prueba',
             postalCode = '41000',
             phone = '345678124',
             imageProfile = '',
             banned=False,
-            user = user_to_visit
+            user = user_to_report
         )
         
-        person_to_visit.save()
+        person_to_report.save()
         
-        url_report = reverse('reportUser', args=[user_to_visit.username])
+        url_report = reverse('reportUser', args=[person_to_report.user.username])
         
         image_path = 'media/reports/prueba1.jpg'
 
@@ -545,7 +595,7 @@ class TestView(TestCase):
         })
         
         self.assertEqual(response.status_code, 302)
-        url_redirected = reverse('visitUserProfile', args=[user_to_visit.username])
+        url_redirected = reverse('visitUserProfile', args=[person_to_report.user.username])
         self.assertRedirects(response, url_redirected)
         self.assertEqual(Report.objects.get(observations='He insulted me').observations, 'He insulted me')
 
@@ -586,9 +636,14 @@ class TestView(TestCase):
         
         self.client.force_login(self.user)
         
+        image_path = 'media/productos/botas.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+        
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -617,11 +672,17 @@ class TestView(TestCase):
         self.assertTemplateUsed(response, 'rentals_in_effect.html')
         
     def test_return_product(self):
+        
         self.client.force_login(self.user)
+        
+        image_path = 'media/productos/botas.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
 
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -645,8 +706,9 @@ class TestView(TestCase):
         response = self.client.get(url_catalogue, {
             'category': 'SPORTS'
         })
-        
+                    
         self.assertTemplateUsed(response, 'catalogue.html')
+
         
     def test_search_for_date_in_catalogue(self):
         self.client.force_login(self.user)
@@ -811,9 +873,14 @@ class TestView(TestCase):
         
         self.client.force_login(self.user)
         
+        image_path = 'media/productos/botas.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+        
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -841,10 +908,15 @@ class TestView(TestCase):
     def test_get_form_add_product_wish_list(self):
         
         self.client.force_login(self.user)
+
+        image_path = 'media/productos/botas.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
         
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -871,9 +943,14 @@ class TestView(TestCase):
         
         self.client.force_login(self.user)
         
+        image_path = 'media/productos/botas.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+        
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -905,9 +982,14 @@ class TestView(TestCase):
         
         self.client.force_login(self.user)
         
+        image_path = 'media/productos/botas.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+        
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -925,7 +1007,7 @@ class TestView(TestCase):
         
         url_quit_product = reverse('delete_product_of_wish_list', args=[product.id, wishlist.id])
         
-        response = self.client.get(url_quit_product)
+        self.client.get(url_quit_product)
         
         self.assertRaises(ProductsInList.DoesNotExist)
         
@@ -1227,71 +1309,6 @@ class TestView(TestCase):
         
         self.assertRaises(Person.DoesNotExist)
         
-    def test_edit_user_admin(self):
-        
-        user_admin = User.objects.create_user(
-            username = 'testuserAdmin',
-            email = 'testuserAdmin@example.com',
-            password = 'TestPassword2001',
-            first_name = 'prueba',
-            last_name = 'prueba',
-            is_staff= True
-        )
-        
-        user_admin.save()
-        
-        person_admin = Person.objects.create(
-            
-            address = 'prueba',
-            postalCode = '41000',
-            phone = '345678124',
-            imageProfile = '',
-            user = user_admin
-        )
-        person_admin.save()
-        
-        user_to_edit = User.objects.create_user(
-            username = 'testuserToEdit',
-            email = 'testuserAdmin@example.com',
-            password = 'TestPassword2001',
-            first_name = 'prueba',
-            last_name = 'prueba',
-            is_staff= False
-        )
-        
-        user_to_edit.save()
-        
-        person_to_edit = Person.objects.create(
-            
-            address = 'prueba',
-            postalCode = '41000',
-            phone = '345678124',
-            imageProfile = '',
-            user = user_to_edit
-        )
-        
-        person_to_edit.save()
-        
-        self.client.force_login(user_admin)
-        
-        url_edited_user_admin = reverse('edit_user', args=[person_to_edit.id])
-        
-        image_path = 'media/avatar1.jpg'
-
-        with open(image_path, 'rb') as file:
-            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
-                
-        response = self.client.post(url_edited_user_admin,{
-            'first_name': 'test changed',
-            'last_name': 'test changed',
-            'address': 'test changed',
-            'postalCode': '41000',
-            'phone': '345667890',
-            'imageProfile': image
-        })
-        
-        self.assertEqual(response.status_code, 302)
-        
     def test_get_form_edit_user_admin(self):
                 
         user_admin = User.objects.create_user(
@@ -1500,7 +1517,7 @@ class TestView(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/products')
         
-    def test_edit_user_admin(self):
+    def test_edit_product_admin(self):
                 
         user_admin = User.objects.create_user(
             username = 'testuserAdmin',
@@ -1525,9 +1542,14 @@ class TestView(TestCase):
         
         self.client.force_login(user_admin)
         
+        image_path = 'media/productos/botas.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+        
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -1579,9 +1601,14 @@ class TestView(TestCase):
         
         self.client.force_login(user_admin)
         
+        image_path = 'media/productos/botas.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+        
         product = Product(
             name = 'testProduct',
-            image = '',
+            image = image,
             description = 'Balon de futbol',
             category = 'SPORTS',
             userWhoUploadProduct = self.person,
@@ -1906,3 +1933,68 @@ class TestView(TestCase):
         
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'report_detail.html')
+    
+    def test_edit_user(self):
+        
+        user_admin = User.objects.create_user(
+            username = 'testuserAdmin',
+            email = 'testuserAdmin@example.com',
+            password = 'TestPassword2001',
+            first_name = 'prueba',
+            last_name = 'prueba',
+            is_staff= True
+        )
+        
+        user_admin.save()
+        
+        person_admin = Person.objects.create(
+            
+            address = 'prueba',
+            postalCode = '41000',
+            phone = '345678124',
+            imageProfile = '',
+            user = user_admin
+        )
+        person_admin.save()
+        
+        user_to_edit = User.objects.create_user(
+            username = 'testuserToEdit',
+            email = 'testuserAdmin@example.com',
+            password = 'TestPassword2001',
+            first_name = 'prueba',
+            last_name = 'prueba',
+            is_staff= False
+        )
+        
+        user_to_edit.save()
+        
+        person_to_edit = Person.objects.create(
+            
+            address = 'prueba',
+            postalCode = '41000',
+            phone = '345678124',
+            imageProfile = '',
+            user = user_to_edit
+        )
+        
+        person_to_edit.save()
+        
+        self.client.force_login(user_admin)
+        
+        url_edited_user_admin = reverse('edit_user', args=[person_to_edit.id])
+        
+        image_path = 'media/avatar1.jpg'
+
+        with open(image_path, 'rb') as file:
+            image = SimpleUploadedFile(file.name, file.read(), content_type='image/jpg')
+                
+        response = self.client.post(url_edited_user_admin,{
+            'first_name': 'test changed',
+            'last_name': 'test changed',
+            'address': 'test changed',
+            'postalCode': '41000',
+            'phone': '345667890',
+            'imageProfile': image
+        })
+        
+        self.assertEqual(response.status_code, 302)
