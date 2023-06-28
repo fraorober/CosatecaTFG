@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>
+        Product Details
+    </title>
+    {%include "navbar.html" %}
+    {% load crispy_forms_tags %}
+
+    <link href="/static/css/zoomImage.css" rel="stylesheet">
+    <link href="/static/css/available.css" rel="stylesheet">
+    <link href="/static/css/ratingStars.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js" integrity="sha384-fbbOQedDUMZZ5KreZpsbe1LCZPVmfTnH7ois6mU1QK+m14rQ1l2bGBq41eYeM/fS" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="/static/css/messages.css" rel="stylesheet">
+
+
+    <style>
+        .imageProfileReview{
+            width: 70px;
+            height: 70px;
+            background-size: cover;
+            border-radius: 50%;
+            margin: 0 auto;
+        }
+
+        @media(max-width:768px){
+
+            .imageProfileReview{
+                width: 40px;
+                height: 40px;
+                background-size: cover;
+                border-radius: 50%;
+                margin: 0 auto;
+            }
+        
+        }
+
+    </style>
+</head>
+
+<body>
+    
+    <div class="container">
+
+        
+
+        <div class="row">
+
+            <div class="col image-container">
+                <div class="image">
+                    {% if product.image %}
+                        <img src="{{product.image.url}}" class="img-fluid card-img-top" alt="..."> 
+                    {% else %}
+                        <img src="/media/NoPhotoDetail.avif" class="card-img-top" alt="..."> 
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="popup-image">
+                {% if product.image %}
+                    <span>&times;</span>
+                    <img src="{{product.image.url}}" class="card-img-top img-fluid" alt="..."> 
+                {% else %}
+                    <span>&times;</span>
+                    <img src="/media/noPhotoDetail.jpg" class="card-img-top img-fluid" alt="..."> 
+                {% endif %}
+            </div>
+
+            <div class="col">
+                    
+                <div class="card booking-card v-2 mt-2 mb-4 rounded-bottom">
+                    
+                    <div class="card-body">
+                        <h4 class="card-title font-weight-bold"><a>{{product.name}}</a></h4>
+                        <p class="card-text">{{product.description}}</p>
+                        <hr class="my-4">
+                        <p class="h5 font-weight-bold mb-4">Category: {{product.category}}</p>
+                        <ul class="list-unstyled d-flex justify-content-start align-items-center mb-0">
+                            <li>Updated on {{product.publicationDate}} by 
+                                {% if product.userWhoUploadProduct.user == request.user %}
+                                    <a href="{% url 'profile'%}">{{product.userWhoUploadProduct}}</a>
+                                {% else %}                       
+                                    <a href="{% url 'visitUserProfile' product.userWhoUploadProduct.user.username %}">{{product.userWhoUploadProduct}}</a>
+                                {% endif %}
+                            </li>
+                            
+                        </ul>
+                        <br>
+                        {% if add_product %}
+                            <a href="/add/{{product.id}}/wishList" class="btn btn-primary">ADD WISH LIST</a>
+
+                        {% else %}
+
+                        {% endif %}
+                        <hr>
+                        <div>
+                            {% if product.userWhoUploadProduct.user == request.user %}
+                                <span class="isYours text"><strong>YOU CAN NOT RENT YOUR OWN PRODUCTS</strong>
+
+                            {% else %}
+
+                                {% if product.availab == True%}
+                                    <span class="parpadea text"><strong>THIS PRODUCT IS AVAILABLE!!!</strong>
+                                    <a href="{% url 'reserve_product' product.id %}" class="btn btn-success">Reserve</a>
+                                {% else %}
+                                    <span class="notAvaila text"><strong>THIS PRODUCT IS NOT AVAILABLE <span style='font-size:30px;'>&#128533;</span></strong>
+                                {% endif %}
+
+                            {% endif%}
+
+
+                        </div>
+                    </div>
+                </div>
+                  
+              </div>
+        
+        </div>
+        <br>
+        <div class="row">
+            
+            <form action="{% url 'submit_review' product.id %}" method="POST">
+
+                {% csrf_token %}
+                <h5>Write your review</h5>
+                {% if messages %}
+                                
+                    {% for mensaje in messages %}
+                        {% if mensaje.error%}
+                            <div class="error"> {{ mensaje }}</div>
+                        {%else%}
+                            <div class="correcto"> {{ mensaje }}</div>
+                        {%endif%}
+                    {% endfor %}
+                
+                {% endif %}
+                <div>
+                    <!-- Starts -->
+                    <label> How do you rate this product?</label>
+                    <br>
+                    <div class="rate">
+                        <input type="radio" name="rating" id="rating10" value="5.0" required/><label for="rating10" title="5"></label>
+                        <input type="radio" name="rating" id="rating9" value="4.5" required/><label for="rating9" title="4.5" class="half"></label>
+                        <input type="radio" name="rating" id="rating8" value="4" required/><label for="rating8" title="4"></label>
+                        <input type="radio" name="rating" id="rating7" value="3.5" required/><label for="rating7" title="3.5" class="half"></label>
+                        <input type="radio" name="rating" id="rating6" value="3" required/><label for="rating6" title="3"></label>
+                        <input type="radio" name="rating" id="rating5" value="2.5" required/><label for="rating5" title="2.5" class="half"></label>
+                        <input type="radio" name="rating" id="rating4" value="2" required/><label for="rating4" title="2"></label>
+                        <input type="radio" name="rating" id="rating3" value="1.5" required/><label for="rating3" title="1.5" class="half"></label>
+                        <input type="radio" name="rating" id="rating2" value="1" required/><label for="rating2" title="1"></label>
+                        <input type="radio" name="rating" id="rating1" value="0.5" required/><label for="rating1" title="0.5" class="half"></label>
+                    </div>
+
+                    <span id="star-error" style="color: red;"></span>
+                    <br>
+                    Review Title:
+                    <input type="text" class="form-control" name="subject" required>
+                    <br>
+                    Review:
+                    <textarea name="review" rows="4" class="form-control"></textarea>
+                    <br>
+                    {% if review_exits %}
+                        <p> You have already valorated this product, you can not valorate again. You can edit your review.</p>
+                    {% else %}
+
+                        {% if user.is_authenticated %}
+                            <input type="submit" value="Submit Review" class="btn btn-primary" onclick="validateForm()">
+                        {% else %}
+                            <p> You must be logged in to push a review.<span> <a href="{% url 'login' %}">Login now</a> </span> </p>               
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </form>
+        </div>
+        <br>
+        <div class="row">
+            
+            <header class="section-heading">
+                <h3>Customer Reviews </h3>
+            </header>
+        </div>
+        <div class="row">
+            {% if reviews %}
+                {% for review in reviews %}
+                    <div class="card">
+                        <article class="box mb-3">
+                            <div class="icontext w-100">
+                                <br>
+                                
+                                {% if review.user.imageProfile %}
+                                    <img src="/media/{{review.user.imageProfile}}" class="card-img-top img-fluid imageProfileReview" alt="..."> 
+                                {% else %}
+                                    <img src="/media/noPhotoProfile.webp" class="card-img-top img-fluid imageProfileReview" alt="...">
+                                {% endif %}
+
+                                <span> &nbsp;&nbsp; <a href="/profile/{{review.user.user.username}}" >{{review.user.user.username}}</a> </span>
+
+
+                                <div class="text">
+                                    <span class="date text-muted float-md-right">{{review.updated_at}} </span>
+                                    <h6 class="mb-1">{{review.user.full_name}} </h6>
+                                    <div class="rating-star">
+                                        <span>
+                                            <i class="fa fa-star{% if review.rating == 0.5 %}-half-o{% elif review.rating < 1 %}-o {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if review.rating == 1.5 %}-half-o{% elif review.rating < 2 %}-o {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if review.rating == 2.5 %}-half-o{% elif review.rating < 3 %}-o {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if review.rating == 3.5 %}-half-o{% elif review.rating < 4 %}-o {% endif %}" aria-hidden="true"></i>
+                                            <i class="fa fa-star{% if review.rating == 4.5 %}-half-o{% elif review.rating < 5 %}-o {% endif %}" aria-hidden="true"></i>
+                                        </span>
+                                    </div>
+                                </div>
+
+                            <p> Updated on {{review.update_date}}</p>
+
+                            </div>
+                            <div class="mt-3">
+                                <h6>{{review.subject}}</h6>
+                                <p>
+                                    {{review.review}}
+                                </p>
+                                {% if review.user.user == request.user %}
+                                    <a href="{% url 'edit_review' review.id %}" class="btn btn-success">Edit</a>
+                                    <a href="{% url 'delete_review' review.id %}" class="btn btn-danger">Delete</a>
+                                {% endif %}
+                            </div>
+                        </article>
+                    </div>
+                {% endfor %}
+                    <br>
+                <div class="pagination-wrapper" >
+                    {% include "pagination.html" %}
+                </div>
+            {% else %}
+                <h5> Not exist reviews for this product yet.</h5>
+            {% endif %}
+            
+
+        </div>
+
+        <br>
+
+    </div>
+
+    <script>
+        function validateForm() {
+            var stars = document.getElementsByName('rating');
+            var starError = document.getElementById('star-error');
+          
+            var starSelected = false;
+            for (var i = 0; i < stars.length; i++) {
+                if (stars[i].checked) {
+                starSelected = true;
+                break;
+                }
+            }
+          
+            if (!starSelected) {
+              starError.textContent = 'Please select a star rating.';
+              event.preventDefault(); // Evita que se envíe el formulario si no se ha seleccionado una estrella.
+            }
+        }
+        document.querySelectorAll('.image-container img').forEach(image =>
+            image.onclick = () => {
+                document.querySelector('.popup-image').style.display = 'block';
+                document.querySelector('.popup-image img').src = image.getAttribute('src');
+            }
+        )
+
+        document.querySelector('.popup-image span').onclick = () =>{
+            document.querySelector('.popup-image').style.display = 'none';
+
+        }
+    </script>
+   
+</body>   
+
+<footer>
+    {%include "footer.html" %}
+
+</footer>
+
+</html>

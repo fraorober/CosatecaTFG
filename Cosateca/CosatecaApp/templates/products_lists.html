@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>
+        List of products
+    </title>
+    {%include "navbar.html" %}
+    <link href="/static/css/card.css" rel="stylesheet">
+    <link href="/static/css/messages.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <main> 
+        <div class="container-fluid cardProduct bg-trasparent my-4 p-3" style="position: relative;">
+
+            <h3>List of products</h3>
+            <hr>
+            <h6>In this section you can find all products.</h6>  
+            <br>
+
+            {% if messages %}
+                                
+                {% for mensaje in messages %}
+                    <div class="correcto"> {{ mensaje }}</div>
+                {% endfor %}
+                
+            {% endif %}
+
+            <div class="col-md-12">
+                <a href="/create/product" class="btn btn-success">CREATE PRODUCT</a>
+                <br>
+            
+                {% if products %}
+
+                    <div class="table-responsive">
+                    
+                        <table class="table table-dark">
+                            <br>
+                                <thead class="thead">
+                                    <tr>
+                                        <th scope="col">Name</th>
+                                        <th scope="col">Added</th>
+                                        <th scope="col">Category</th>
+                                        <th scope="col">Actions</th>
+
+                                    </tr>
+                                </thead>
+                                {% for product in products %}
+
+                                    <tbody>
+                                    <tr>
+
+                                        <td><a href="/product/{{product.id}}">{{product.name}}</a></td>
+                                        <td>{{product.publicationDate}}</td>
+                                        <td>{{product.category}}</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="/delete/product/{{product.id}}" class="btn btn-danger">DELETE</a>
+                                                &nbsp;&nbsp;&nbsp;
+                                                <a href="/edit/product/{{product.id}}" class="btn btn-success">EDIT</a>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                    </tbody>
+                                {% endfor %}
+
+                        </table>
+
+                    </div>
+
+                    <div class="pagination-wrapper" >
+                        {% include "pagination.html" %}
+                    </div>
+
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    
+                    
+                {% else %}
+
+                    <div>
+                        <h5>Not exists users yet!</h5> 
+                        
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+
+                {% endif %}
+            </div>
+        </div> 
+    </main>
+    
+   
+</body>           
+<footer>
+    {%include "footer.html" %}
+
+</footer>
+
+</html>

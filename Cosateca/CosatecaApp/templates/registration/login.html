@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>
+        Login
+    </title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    {%include "navbar.html" %}
+    {% load crispy_forms_tags %}
+    <link href="/static/css/messages.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+    <div class="container">
+        <br>
+        <br>
+        <br>
+        <div class="row">
+
+            <div class="col-12 col-md offset-md">
+                
+                <div class="card" style="max-width: 600px; margin: 0 auto;">
+
+                    <div class="card-body">
+
+                        <h2 class="Titulo Registro"> Login</h2>
+                        <hr>
+                        {% if messages %}
+                                
+                            {% for mensaje in messages %}
+                                <div class="info"> {{ mensaje }}</div>
+                            {% endfor %}
+                        
+                        {% endif %}
+                        <form action="" method="post" id="loginForm">
+
+                            {% csrf_token %}
+
+                            {{form | crispy}}
+
+                            <br>
+                            <a href="/register" class="btn btn-warning float-left"> Register</a>
+                            <input type="submit" value="Login" class="btn btn-success float-right">
+
+                        </form>
+                    </div>
+
+                </div>
+
+
+
+            </div>
+
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        
+    </div>
+   
+</body>    
+
+<footer>
+    {%include "footer.html" %}
+
+</footer>
+
+</html>

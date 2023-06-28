@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>
+        List of Reports
+    </title>
+    {%include "navbar.html" %}
+    <link href="/static/css/card.css" rel="stylesheet">
+    <link href="/static/css/messages.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <main> 
+        <div class="container-fluid cardProduct bg-trasparent my-4 p-3" style="position: relative;">
+
+            <h3>List of reports</h3>
+            <hr>
+            <h6>In this section you can find all reports.</h6>  
+            <br>
+
+            {% if messages %}
+                                
+                {% for mensaje in messages %}
+                    <div class="correcto"> {{ mensaje }}</div>
+                {% endfor %}
+                
+            {% endif %}
+
+            <div class="col">
+                <br>
+            
+                {% if reports %}
+                    <div class="table-responsive">
+                        <table class="table table-dark">
+                            <br>
+                                <thead class="thead">
+                                    <tr>
+                                        <th scope="col">Reporting User</th>
+                                        <th scope="col">Reported User</th>
+                                        <th scope="col">Date</th>
+                                        <th scope="col">Reason</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Actions</th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                {% for report in reports %}
+
+                                    <tr>
+
+                                        <td><a href="/profile/{{report.reportingUser.user.username}}">{{report.reportingUser.user.username}}</a></td>
+                                        <td><a href="/profile/{{report.reportedUser.user.username}}">{{report.reportedUser.user.username}}</a></td>
+                                        <td>{{report.date}}</td>
+                                        <td>{{report.reason}}</td>
+                                        <td>{{report.status}}</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a href="/report/accept/{{report.reportedUser.id}}/{{report.reportingUser.id}}/{{report.id}}" class="btn btn-success">ACCEPT</a>
+                                                &nbsp;&nbsp;&nbsp;
+                                                <a href="/report/reject/{{report.reportedUser.id}}/{{report.reportingUser.id}}/{{report.id}}" class="btn btn-warning">REJECT</a>
+                                                &nbsp;&nbsp;&nbsp;
+                                                <a href="/report/delete/{{report.reportedUser.id}}/{{report.reportingUser.id}}/{{report.id}}" class="btn btn-danger">DELETE</a>
+                                                &nbsp;&nbsp;&nbsp;
+                                                <a href="/report/view/{{report.reportedUser.id}}/{{report.reportingUser.id}}/{{report.id}}" class="btn btn-primary">VIEW</a>
+                                            </div>
+
+                                        </td></td>
+
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+
+                        </table>
+                    </div>
+
+                    <div class="pagination-wrapper" >
+                        {% include "pagination.html" %}
+                    </div>
+
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    
+                    
+                {% else %}
+
+                    <div>
+                        <h5>Not exists reports yet!</h5> 
+                        
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+                    <br>
+
+                {% endif %}
+            </div>
+        </div> 
+    </main>
+    
+   
+</body>           
+<footer>
+    {%include "footer.html" %}
+
+</footer>
+
+</html>

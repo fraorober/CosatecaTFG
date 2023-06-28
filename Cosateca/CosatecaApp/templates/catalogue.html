@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>
+        Catalogue
+    </title>
+    {%include "navbar.html" %}
+
+    <link href="/static/css/card.css" rel="stylesheet">
+    <link href="/static/css/messages.css" rel="stylesheet">
+    {% load crispy_forms_tags %}
+
+
+</head>
+
+<body>
+    <main> 
+        <div class="container-fluid cardProduct bg-trasparent my-4 p-3" style="position: relative;">
+
+            <div class="row">
+                <h3>Catalogue</h3>
+                <hr>
+                <div class="col">
+                    <h6>In this section you can see all objects and you can filter for some fields.</h6>
+                </div>
+
+                <br>
+                <br>
+            </div>
+            <br>
+            
+            <div class="row">
+                <div class="col-md-4">
+                    <form action="" method="GET" id="">
+
+                        {% csrf_token %}
+                        {% if messages %}
+                                    
+                            {% for mensaje in messages %}
+                                <div class="error"> {{ mensaje }}</div>
+                            {% endfor %}
+                        
+                        {% endif %}
+                        <label for="id_name"> Search for name or some words of description:</label>
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search" id="id_name">
+                        <br>
+                        <div>
+                            
+                            <label for="id_category">Category:</label>
+                            <select name="category" id="id_category" class='form-control'>
+                                <option selected disabled>Select a option</option>
+                                {% for choice in categories %}
+                                    <option value="{{ choice }}">{{ choice }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <br>
+                        <div >
+                            <label for="id_novelty">If you check this, we show you the products in the last days:</label>
+                            <div class="form-control">
+                                <input type="checkbox" name="novelty" id="id_novelty">
+                                <label for="id_novelty">Last 7 days</label>
+                            </div>
+
+                        </div>
+                        <br>
+                          
+
+                        <br>
+                        <input type="submit" value="Search" class="btn btn-success float-right">
+
+                    </form>
+                </div>
+                
+                <div class="col">
+                    {% if products %}
+                    
+                        
+                        <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-3 g-3">
+                            {% for product in products %}
+                                <div class="col"> 
+                                    <div class="card h-100 shadow-sm"> 
+                                    {% if product.image %}
+                                        {% if product.image != "False" %}
+                                            <img src="/media/{{product.image}}" alt="Product Image" class="card-img-top img-fluid">
+                                        {% else %}
+                                            <img src="/media/noPhoto.jpg" alt="Product Image" class="card-img-top img-fluid">
+                                        {% endif %}
+                                    {% else %}
+                                        <img src="/media/noPhoto.jpg" alt="Product Image" class="card-img-top img-fluid">
+                                    {% endif %}
+
+                                        <div class="card-body"> 
+                                            <div class="clearfix mb-3"> 
+                                                <span class="float-start badge rounded-pill bg-primary">{{product.category}}</span>
+                                                {% if product in new_products %}
+                                                    <span class="float-end badge rounded-pill bg-danger newProduct">New</span>
+                                                {% endif %}
+                                            </div>
+                                            <h2 class="card-title">{{product.name}}</h2>  
+                                            <p class="text">{{product.description}}</p> 
+                                            <div class="text-center my-4">
+                                                <hr>
+                                                <div>
+                                                    <a href="/product/{{product.id}}" class="btn btn-warning">Check offer</a>
+                                                </div>
+                                        
+                                            </div> 
+                                        </div> 
+                                    </div> 
+                                </div>
+
+                            {% endfor %}
+                            
+                        </div>
+                        <div class="pagination-wrapper" >
+                            {% include "pagination.html" %}
+                        </div>
+                        
+                    {% else %}
+
+                        <div>
+                            <div class="row row-cols-1 row-cols-xs-2 row-cols-sm-2 row-cols-lg-3 g-3">
+                                {% for product in new_products %}
+                                    <div class="col"> 
+                                        <div class="card h-100 shadow-sm"> 
+                                        {% if product.image %}
+                                            {% if product.image != "False" %}
+                                                <img src="/media/{{product.image}}" alt="Product Image" class="card-img-top img-fluid">
+                                            {% else %}
+                                                <img src="/media/noPhoto.jpg" alt="Product Image" class="card-img-top img-fluid">
+                                            {% endif %}
+                                        {% else %}
+                                            <img src="/media/noPhoto.jpg" alt="Product Image" class="card-img-top img-fluid">
+                                        {% endif %}
+    
+                                            <div class="card-body"> 
+                                                <div class="clearfix mb-3"> 
+                                                    <span class="float-start badge rounded-pill bg-primary">{{product.category}}</span>
+                                                    {% if product in new_products %}
+                                                        <span class="float-end badge rounded-pill bg-danger newProduct">New</span>
+                                                    {% endif %}
+                                                </div>
+                                                <h2 class="card-title">{{product.name}}</h2>  
+                                                <h2 class="text">{{product.description}}</h2> 
+                                                <div class="text-center my-4">
+                                                    <hr>
+                                                    <div>
+                                                        <a href="/product/{{product.id}}" class="btn btn-warning">Check offer</a>
+                                                    </div>
+                                            
+                                                </div> 
+                                            </div> 
+                                        </div> 
+                                    </div>
+    
+                                {% endfor %}
+                                
+                            </div>
+                            <div class="pagination-wrapper" >
+                                {% include "pagination.html" %}
+                            </div>
+                        </div>
+
+                    {% endif %}
+                    
+            </div>
+        </div> 
+    </main>
+    
+   
+</body>           
+<footer>
+    {%include "footer.html" %}
+
+</footer>
+
+</html>
