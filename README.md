@@ -3,8 +3,8 @@ Trabajo de Fin de Grado realizado por Francisco de Paula Orozco Bernárdez-Zerpa
 
 En este README podrá encontrar dos breves guías para poder ejecutar la aplicación y los "test".
 
-Instrucciones e indicaciones para poder probar la aplicación:
-1. Descargamos el zip, extraigalo y ábralo con su IDE favorito. Podrá observar cuatro archivos entre los que se encuentra el “requirements.txt” que contiene todas las dependencias necesarias para que funcione el proyecto. Se recomienda el uso de un entorno virtual. Si se encuentra en Windows y usando Visual Studio Code, ejecute los siguientes comandos:
+## Instrucciones e indicaciones para poder probar la aplicación:
+1. Descargamos el zip, extraigalo y abra la carpeta resultante con su IDE preferido. Podrá observar cuatro archivos entre los que se encuentra el “requirements.txt”, que contiene todas las dependencias necesarias para que funcione el proyecto. Se recomienda el uso de un entorno virtual (Es necesario que tenga instalado Python). Si se encuentra en Windows y usando Visual Studio Code, ejecute los siguientes comandos:
    
             python -m venv NOMBRE_ENTORNO → Le creará el entorno virtual.
    
@@ -12,7 +12,7 @@ Instrucciones e indicaciones para poder probar la aplicación:
    
             pip install -r requirements.txt → Para instalar todas las dependencias.
    
-2. De las dos carpetas mencionadas anteriormente, sitúese dentro de la carpeta denominada “Cosateca”.
+2. De las dos carpetas que hay: “TFG” y “Cosateca”, sitúese dentro de la carpeta denominada “Cosateca”.
    
 3. Dentro de esta podrá encontrar diversos archivos y directorios, entre ellos el archivo “manage.py” que nos servirá más adelante para arrancar la aplicación.
    
@@ -32,7 +32,7 @@ Instrucciones e indicaciones para poder probar la aplicación:
 
             Nombre: cosateca
 
-6. Ya está creada la base de datos. Hacemos la migración, ejecutando dicho comando a la altura del archivo “manage.py”:
+6. Ya está creada la base de datos. Hacemos la migración, ejecutando estos comandos a la altura del archivo “manage.py”:
 
             python manage.py makemigrations
 
@@ -58,7 +58,7 @@ Para probar la aplicación puede registrarse o iniciar sesión con alguno de los
                   Password: asdf1234
 
 
-Instrucciones para ejecutar los “tests”:
+## Instrucciones para ejecutar los “tests”:
 1. En la terminal póngase a la altura del archivo “manage.py”.
    
 2. Puede ejecutar las pruebas con dos comandos diferentes:
