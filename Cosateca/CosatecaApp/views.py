@@ -288,7 +288,7 @@ def visit_profile_user(request, username):
     pages = range(1, products.paginator.num_pages + 1) # +1 because in range the last number are not included
     numPages = len(pages)
     
-    return render(request, 'visit_user_profile.html', {'products': products, 'person': person, 'numProducts': numProducts, 'numRatings': numRatings, 'pages': pages, 'current_page': current_page, 'numPages': numPages})
+    return render(request, 'visit_user_profile.html', {'products': products, 'person': person, 'numProducts': numProducts, 'numRatings': numRatings, 'current_page': current_page, 'numPages': numPages})
 
 @login_required
 def report_user(request, username):
@@ -443,7 +443,7 @@ def catalogue(request):
     except Product.DoesNotExist:
         pass
     
-    return render(request, 'catalogue.html', {'products': products, 'new_products':new_products, 'categories': categories, 'pages': pages, 'current_page': current_page, 'numPages': numPages})
+    return render(request, 'catalogue.html', {'products': products, 'new_products':new_products, 'categories': categories, 'current_page': current_page, 'numPages': numPages})
 
 @login_required
 def wish_list_of_loggued_user(request):
