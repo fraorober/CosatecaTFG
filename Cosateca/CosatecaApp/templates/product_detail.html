@@ -92,11 +92,15 @@
                             
                         </ul>
                         <br>
-                        {% if add_product %}
-                            <a href="/add/{{product.id}}/wishList" class="btn btn-primary">ADD WISH LIST</a>
+                        {% if request.user.is_staff %}
 
                         {% else %}
+                            {% if add_product %}
+                                <a href="/add/{{product.id}}/wishList" class="btn btn-primary">ADD WISH LIST</a>
 
+                            {% else %}
+
+                            {% endif %}
                         {% endif %}
                         <hr>
                         <div>
@@ -105,11 +109,18 @@
 
                             {% else %}
 
-                                {% if product.availab == True%}
-                                    <span class="parpadea text"><strong>THIS PRODUCT IS AVAILABLE!!!</strong>
-                                    <a href="{% url 'reserve_product' product.id %}" class="btn btn-success">Reserve</a>
+                                {% if request.user.is_staff%}
+                                    <span class="notAvaila text"><strong>ADMINS CAN NOT RESERVE PRODUCTS<span style='font-size:30px;'></span></strong>
+
                                 {% else %}
-                                    <span class="notAvaila text"><strong>THIS PRODUCT IS NOT AVAILABLE <span style='font-size:30px;'>&#128533;</span></strong>
+
+                                    {% if product.availab == True%}
+                                        <span class="parpadea text"><strong>THIS PRODUCT IS AVAILABLE!!!</strong>
+                                        <a href="{% url 'reserve_product' product.id %}" class="btn btn-success">Reserve</a>
+                                    {% else %}
+                                        <span class="notAvaila text"><strong>THIS PRODUCT IS NOT AVAILABLE <span style='font-size:30px;'>&#128533;</span></strong>
+                                    {% endif %}
+                                
                                 {% endif %}
 
                             {% endif%}
@@ -199,7 +210,11 @@
                                     <img src="/media/noPhotoProfile.webp" class="card-img-top img-fluid imageProfileReview" alt="...">
                                 {% endif %}
 
-                                <span> &nbsp;&nbsp; <a href="/profile/{{review.user.user.username}}" >{{review.user.user.username}}</a> </span>
+                                {% if request.user.username == review.user.user.username %}
+                                    <span> &nbsp;&nbsp; <a href="/profile" >{{review.user.user.username}}</a> </span>
+                                {% else %}
+                                    <span> &nbsp;&nbsp; <a href="/profile/{{review.user.user.username}}" >{{review.user.user.username}}</a> </span>
+                                {% endif %}
 
 
                                 <div class="text">
