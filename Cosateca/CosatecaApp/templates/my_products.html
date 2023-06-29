@@ -24,12 +24,7 @@
             {% if messages %}
                                 
                 {% for mensaje in messages %}
-                    {% if mensaje.correcto %}
-                        <div class="correcto"> {{ mensaje }}</div>
-                    {% else %}
-                        <div class="error"> {{ mensaje }}</div>
-
-                    {% endif %}
+                    <div class="info"> {{ mensaje }}</div>
                 {% endfor %}
             
             {% endif %}
