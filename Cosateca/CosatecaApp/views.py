@@ -581,7 +581,7 @@ def list_users(request):
     pages = range(1, people.paginator.num_pages + 1) # +1 because in range the last number are not included
     numPages = len(pages)
     
-    return render(request, 'users_list.html', {'people': people, 'pages': pages, 'current_page': current_page, 'numPages': numPages})
+    return render(request, 'users_list.html', {'people': people, 'current_page': current_page, 'numPages': numPages})
 
 @user_passes_test(staff_check)
 @login_required
@@ -639,7 +639,8 @@ def edit_user(request, user_id):
             person.user.last_name = form.cleaned_data['last_name']
             person.address = form.cleaned_data['address']
             person.postalCode = form.cleaned_data['postalCode']
-            person.imageProfile = form.cleaned_data['imageProfile']
+            if 'imageProfile' in request.FILES:
+                person.imageProfile = form.cleaned_data['imageProfile']
             person.phone = form.cleaned_data['phone']
             person.user.save()
             person.save()
@@ -651,7 +652,6 @@ def edit_user(request, user_id):
             'last_name': person.user.last_name,
             'address': person.address,
             'postalCode': person.postalCode,
-            'imageProfile': person.imageProfile,
             'phone': person.phone
         })
 
@@ -716,10 +716,11 @@ def edit_product_admin(request, product_id):
     product = Product.objects.get(id=product_id)
     
     if request.method == 'POST':
-        form = ProductForm(request.POST,  request.FILES)
+        form = EditProductForm2(request.POST,  request.FILES)
         if form.is_valid():
             product.name = form.cleaned_data['name']
-            product.image = form.cleaned_data['image']
+            if 'image' in request.FILES:
+                product.image = form.cleaned_data['image']
             product.description = form.cleaned_data['description']
             product.category = form.cleaned_data['category']
             product.save()
@@ -727,9 +728,8 @@ def edit_product_admin(request, product_id):
 
             return redirect('/products')
     else: #Rellena con los campos ya existentes
-        form = ProductForm(initial={
+        form = EditProductForm2(initial={
             'name': product.name,
-            'image': product.image,
             'description': product.description,
             'category': product.category
         })
@@ -761,7 +761,7 @@ def list_reports(request):
     pages = range(1, reports.paginator.num_pages + 1) # +1 because in range the last number are not included
     numPages = len(pages)
     
-    return render(request, 'report_list.html', {'reports': reports, 'pages':pages, 'current_page': current_page, 'numPages': numPages})
+    return render(request, 'report_list.html', {'reports': reports, 'current_page': current_page, 'numPages': numPages})
 
 @user_passes_test(staff_check)
 @login_required
