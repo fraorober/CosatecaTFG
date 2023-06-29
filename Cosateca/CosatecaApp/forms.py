@@ -122,6 +122,14 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = ['name', 'image', 'description', 'category']
         labels = {'category': 'Category' }
+        
+class EditProductForm2(forms.ModelForm):
+    
+    image = forms.ImageField(required=False)
+    class Meta:
+        model = Product
+        fields = ['name', 'image', 'description', 'category']
+        labels = {'category': 'Category' }
 
 class EditProductForm(forms.Form):
     name = forms.CharField(max_length=60)
@@ -166,7 +174,7 @@ class EditInfoUserForm(forms.Form):
     last_name = forms.CharField(max_length=40, error_messages={'required': 'This field is required.'})
     address = forms.CharField(max_length=40, error_messages={'required': 'This field is required.'})
     postalCode = forms.CharField(max_length=5, error_messages={'required': 'This field is required.'})
-    imageProfile = forms.ImageField(required=True, label="Image Profile")
+    imageProfile = forms.ImageField(required=False, label="Image Profile")
     phone = forms.CharField(max_length=9, error_messages={'required': 'This field is required.'})
 
     def clean_postalCode(self):

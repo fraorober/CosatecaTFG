@@ -188,7 +188,8 @@ def edit_user_info(request):
             person.user.last_name = form.cleaned_data['last_name']
             person.address = form.cleaned_data['address']
             person.postalCode = form.cleaned_data['postalCode']
-            person.imageProfile = form.cleaned_data['imageProfile']
+            if 'imageProfile' in request.FILES:
+                person.imageProfile = form.cleaned_data['imageProfile']
             person.phone = form.cleaned_data['phone']
             person.user.save()
             person.save()
@@ -200,7 +201,6 @@ def edit_user_info(request):
             'last_name': person.user.last_name,
             'address': person.address,
             'postalCode': person.postalCode,
-            'imageProfile': person.imageProfile,
             'phone': person.phone
         })
 
@@ -246,19 +246,19 @@ def edit_product_upload_by_logged_user(request, product_id):
     person = Person.objects.get(user__id=request.user.id)
     if Product.objects.filter(userWhoUploadProduct=person, id=product_id).exists():
         if request.method == 'POST':
-            form = ProductForm(request.POST,  request.FILES)
+            form = EditProductForm2(request.POST,  request.FILES)
             if form.is_valid():
                 product.name = form.cleaned_data['name']
-                product.image = form.cleaned_data['image']
+                if 'image' in request.FILES:
+                    product.image = form.cleaned_data['image']
                 product.description = form.cleaned_data['description']
                 product.category = form.cleaned_data['category']
                 product.save()
                 messages.success(request, 'Edited succesfully!')
                 return redirect('/myProducts')
         else: #Rellena con los campos ya existentes
-            form = ProductForm(initial={
+            form = EditProductForm2(initial={
                 'name': product.name,
-                'image': product.image,
                 'description': product.description,
                 'category': product.category
             })
